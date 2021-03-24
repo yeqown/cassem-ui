@@ -14,7 +14,7 @@
         @pressEnter="hdlSearch"
         style="width: 200px"
       />
-      <a-button type="primary">
+      <a-button type="primary" @click="hdlCreateClick">
         <template #icon><PlusCircleOutlined /></template>
       </a-button>
     </template>
@@ -46,7 +46,7 @@
 
 <script>
 import { reactive, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { pagingPairs } from "/@/services/pairs";
 import { mappingDT } from "/@/services/mapping";
 import { PlusCircleOutlined } from "@ant-design/icons-vue";
@@ -56,6 +56,7 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const state = reactive({
       ns: route.params.ns,
       pairs: [],
@@ -111,11 +112,15 @@ export default {
       getPair();
     };
 
+    const hdlCreateClick = () => {
+      router.push(`/namespaces/${state.ns}/pairs/new?m=creating`);
+    };
+
     onMounted(async () => {
       getPair();
     });
 
-    return { state, translateDatatype, hdlSearch };
+    return { state, translateDatatype, hdlSearch, hdlCreateClick };
   },
 };
 </script>

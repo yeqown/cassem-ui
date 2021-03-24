@@ -7,6 +7,7 @@ let instance = axios.create({
 
 instance.interceptors.response.use(
   (res) => {
+    message.success("Request OK");
     if (res.data.errcode === 0) {
       if (res.data.data) {
         return res.data.data;

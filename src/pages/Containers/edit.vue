@@ -186,12 +186,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-:deep(.config-key) {
-  // background: white;
-  display: flex;
-  // padding: 10px;
-  .item {
-    flex: 1;
-  }
-}
 </style>

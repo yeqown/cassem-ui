@@ -7,8 +7,8 @@ import Pairs from "./pages/Pairs/index.vue";
 import PairEdit from "./pages/Pairs/edit.vue";
 import Index from './pages/index.vue';
 
-const dyContainerPropsFn = (route: RouteLocation) => {
-  // console.log("========== dyContainerPropsFn called", route.query.m);
+const dyEditingModePropsFn = (route: RouteLocation) => {
+  // console.log("========== dyEditingModePropsFn called", route.query.m);
   return { editingMode: route.query.m }
 }
 
@@ -24,7 +24,7 @@ const routes = [
   {
     path: "/namespaces/:ns/containers/:containerKey",
     component: ContainerEdit,
-    props: dyContainerPropsFn,
+    props: dyEditingModePropsFn,
   },
   {
     path: "/namespaces/:ns/pairs",
@@ -33,6 +33,7 @@ const routes = [
   {
     path: "/namespaces/:ns/pairs/:pairKey",
     component: PairEdit,
+    props: dyEditingModePropsFn,
   },
   {
     path: "/docs",
