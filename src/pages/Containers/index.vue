@@ -15,56 +15,51 @@
           @pressEnter="hdlSearch"
           style="width: 200px"
         />
-        <a-button type="primary">
+        <a-button type="primary" @click="hdlCreateContainer">
           <template #icon><PlusCircleOutlined /></template>
         </a-button>
       </template>
     </a-page-header>
 
-    <a-table :columns="state.columns" :data-source="state.containers">
+    <a-table :columns="columns" :data-source="state.containers">
+      <!-- container custome render -->
       <template #containerKey="{ record }">
         <router-link :to="`/namespaces/${state.ns}/containers/${record.key}`">
           <a-tag color="geekblue">{{ record.key.toUpperCase() }}</a-tag>
         </router-link>
+      </template>
+      <!-- custome ops render -->
+      <template #ops>
+        <a-button
+          type="danger"
+          shape="circle"
+          @click="hdlDelContainer"
+          size="small"
+          ><DeleteOutlined color="red" />
+        </a-button>
       </template>
     </a-table>
   </a-card>
 </template>
 
 <script>
-import { reactive, onMounted, onBeforeMount } from "vue";
-import { useRoute } from "vue-router";
-import { pagingContainers } from "/@/services/container";
-import { PlusCircleOutlined } from "@ant-design/icons-vue";
+import { reactive, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { pagingContainers, delContainer } from "/@/services/container";
+import { PlusCircleOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 export default {
   components: {
     PlusCircleOutlined,
+    DeleteOutlined,
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const state = reactive({
       containers: [],
       ns: route.params.ns,
       containerKeyPattern: "",
       searchLoading: false,
-      columns: [
-        {
-          title: "CONTAINER-KEY",
-          dataIndex: "key",
-          key: "key",
-          slots: {
-            customRender: "containerKey",
-          },
-        },
-        {
-          title: "NAMESAPCE",
-          dataIndex: "namespace",
-        },
-        {
-          title: "CHECKSUM",
-          dataIndex: "checkSum",
-        },
-      ],
     });
 
     const getContainer = async () => {
@@ -84,11 +79,45 @@ export default {
       getContainer();
     };
 
+    const hdlDelContainer = (key) => {
+      delContainer(state.ns, key);
+    };
+
+    const hdlCreateContainer = () => {
+      // console.log("called", router);
+      router.push(`/namespaces/${state.ns}/containers/new?m=creating`);
+    };
+
     onMounted(async () => {
       getContainer();
     });
 
-    return { state, hdlSearch };
+    const columns = [
+      {
+        title: "CONTAINER-KEY",
+        dataIndex: "key",
+        key: "key",
+        slots: {
+          customRender: "containerKey",
+        },
+      },
+      {
+        title: "NAMESAPCE",
+        dataIndex: "namespace",
+      },
+      {
+        title: "CHECKSUM",
+        dataIndex: "checkSum",
+      },
+      {
+        title: "OPS",
+        slots: {
+          customRender: "ops",
+        },
+      },
+    ];
+
+    return { state, hdlSearch, columns, hdlDelContainer, hdlCreateContainer };
   },
 };
 </script>

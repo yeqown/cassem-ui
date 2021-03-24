@@ -1,109 +1,98 @@
 <template>
-  <a-form :model="state" :label-col="labelCol" :wrapper-col="wrapperCol">
-    <a-form-item label="CONTAINER KEY">
-      <a-input v-model:value="state.key" :disabled="true" />
-    </a-form-item>
+  <a-card>
+    <a-page-header
+      title="New"
+      :sub-title="`create a container under the namespace [${state.ns}]`"
+      @back="() => $router.go(-1)"
+    >
+      <template #extra>
+        <a-input
+          v-model:value="state.key"
+          :disabled="!state.isCreating"
+          style="width: 200px"
+        />
+        <a-button type="primary" @click="hdlCreateOrUpdate"> SAVE </a-button>
+      </template>
+    </a-page-header>
 
-    <a-form-item label="OPERATIONS">
-      <a-button type="primary">UPDATE</a-button>
-    </a-form-item>
-  </a-form>
+    <!-- fields table -->
+    <a-table :columns="columns" :data-source="state.fields" bordered>
+      <template #fieldkey="{ record: field }">
+        <a-typography-paragraph v-model:content="field.key" editable />
+      </template>
 
-  <a-table :columns="columns" :data-source="state.fields" bordered>
-    <template #fieldkey="{ record: field }">
-      <a-typography-paragraph v-model:content="field.key" editable />
-    </template>
+      <template #fieldtype="{ record: field }">
+        <a-tag color="geekblue">{{
+          translateFieldType(field.fieldType).toUpperCase()
+        }}</a-tag>
+      </template>
 
-    <template #fieldtype="{ record: field }">
-      <a-tag color="geekblue">{{
-        translateFieldType(field.fieldType).toUpperCase()
-      }}</a-tag>
-    </template>
-
-    <!-- field pairs -->
-    <template #expandedRowRender="{ record: field }">
-      <a-table
-        :columns="fieldPairsColumns"
-        :data-source="field.pairs"
-        :pagination="false"
-        :showHeader="false"
-      >
-        <template #alias="{ record: pair }">
-          <a-typography-paragraph
-            v-model:content="pair.key"
-            :editable="
-              pair.key != '-'
-                ? { maxlength: 50, autoSize: { maxRows: 1, minRows: 1 } }
-                : false
-            "
-          />
-        </template>
-      </a-table>
-    </template>
-  </a-table>
+      <template #expandedRowRender="{ record: field }">
+        <!-- field pairs table -->
+        <a-table
+          :columns="fieldPairsColumns"
+          :data-source="field.pairs"
+          :pagination="false"
+          :showHeader="false"
+        >
+          <template #alias="{ record: pair }">
+            <a-typography-paragraph
+              v-model:content="pair.key"
+              :editable="
+                pair.key != '-'
+                  ? { maxlength: 50, autoSize: { maxRows: 1, minRows: 1 } }
+                  : false
+              "
+            />
+          </template>
+        </a-table>
+      </template>
+    </a-table>
+  </a-card>
 </template>
 
 <script>
 import { onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { getCtConfig } from "/@/services/container";
+import { getContainerDetail } from "/@/services/container";
 import { mappingFT, transformField } from "/@/services/mapping";
 export default {
-  setup() {
-    const formRef = ref();
+  props: {
+    editingMode: "",
+  },
+
+  setup(props) {
+    // const formRef = ref();
     const route = useRoute();
     const state = reactive({
-      list: [],
+      ns: "",
       key: "",
       fields: [],
+      isCreating: props.editingMode === "creating",
     });
-
-    let validatePass = async (rule, value) => {
-      if (value === "") {
-        return Promise.reject("Please input the password");
-      } else {
-        if (formState.checkPass !== "") {
-          formRef.value.validateField("checkPass");
-        }
-        return Promise.resolve();
-      }
-    };
-
-    const rules = {
-      pass: [
-        {
-          validator: validatePass,
-          trigger: "change",
-        },
-      ],
-    };
-
-    const handleFinish = (values) => {
-      console.log(values, formState);
-    };
-
-    const handleFinishFailed = (errors) => {
-      console.log(errors);
-    };
-
-    const resetForm = () => {
-      formRef.value.resetFields();
-    };
 
     const translateFieldType = (ft) => {
       return mappingFT[ft];
     };
 
+    const hdlCreateOrUpdate = () => {
+      // create or update container
+      console.error("implement me");
+    };
+
     onMounted(async () => {
+      // console.log("==============", route.params, route.fullPath, route.props);
       const { ns, containerKey } = route.params;
-      const data = await getCtConfig(ns, containerKey);
-      state.key = data.key;
-      // state.fields = data.fields;
+      state.ns = ns;
+      state.key = containerKey;
+      if (state.isCreating) {
+        // in creating mode, DO NOT request from remote API server.
+        return;
+      }
+      const data = await getContainerDetail(ns, containerKey);
       data.fields.forEach((field, idx) => {
         state.fields.push(transformField(field));
       });
-
-      console.log(state.fields);
     });
 
     const columns = [
@@ -141,16 +130,12 @@ export default {
     ];
 
     return {
+      state,
       labelCol: { span: 3 },
       wrapperCol: { span: 4 },
-      state,
-      rules,
-      // layout,
-      handleFinish,
-      handleFinishFailed,
-      resetForm,
-      formRef,
+
       translateFieldType,
+      hdlCreateOrUpdate,
 
       columns,
       fieldPairsColumns,

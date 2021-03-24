@@ -34,7 +34,6 @@
 <script>
 import { onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { getCtConfig } from "/@/services/container";
 export default {
   setup() {
     const formRef = ref();

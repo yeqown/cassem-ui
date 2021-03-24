@@ -15,6 +15,7 @@ instance.interceptors.response.use(
     }
   },
   (err) => {
+    console.error(err);
     message.error({
       content: err.errmsg || err.message,
     });
