@@ -1,15 +1,3 @@
-// const MappingDT = {
-//     1: "Integer",
-//     2: "Float",
-//     3: "String",
-//     4: "Boolean",
-//     5: "List",
-//     6: "Dict",
-// }
-
-import { vModelCheckbox } from "@vue/runtime-dom";
-import { List } from "ant-design-vue";
-
 export const mappingDT = {
     1: "Integer",
     2: "String",
@@ -25,7 +13,7 @@ export const mappingFT = {
     3: "Dictionary",
 }
 
-interface Pair {
+interface pairFromAPI {
     key: string
     value: {
         pairKey: string
@@ -33,30 +21,30 @@ interface Pair {
     }
 }
 
-interface FieldFromAPI {
+export interface fieldFromAPI {
     fieldType: Number
     key: string
     value: any
 }
 
-interface fieldVO {
+export interface fieldVO {
     fieldType: Number
     key: string
-    pairs: pairVO[]
+    pairs: fieldPairVO[]
 }
 
-interface pairVO {
+interface fieldPairVO {
     key: string
     pairKey: any
 }
 
 // transformField transform field.value from "pair + pair list + pair dictionary" into
-// []pairVO
-export const transformField = (f: FieldFromAPI): fieldVO => {
-    let arr: pairVO[] = [];
+// []fieldPairVO
+export const transformField = (f: fieldFromAPI): fieldVO => {
+    let arr: fieldPairVO[] = [];
     if (f.fieldType === 1) {
         //  KV
-        let v: Pair = f.value;
+        let v: pairFromAPI = f.value;
         arr.push({ key: "-", pairKey: v.key })
         return {
             fieldType: f.fieldType,
@@ -67,7 +55,7 @@ export const transformField = (f: FieldFromAPI): fieldVO => {
 
     if (f.fieldType === 2) {
         //  LIST
-        let v: Pair[] = f.value;
+        let v: pairFromAPI[] = f.value;
         v.forEach((pair, idx) => {
             arr.push({ key: "-", pairKey: pair.key })
         })
@@ -79,7 +67,7 @@ export const transformField = (f: FieldFromAPI): fieldVO => {
     }
 
     //  DICT
-    let v: Record<string, Pair> = f.value;
+    let v: Record<string, pairFromAPI> = f.value;
     for (const key in v) {
         let pair = v[key]
         arr.push({ key, pairKey: pair.key })
@@ -88,5 +76,36 @@ export const transformField = (f: FieldFromAPI): fieldVO => {
         fieldType: f.fieldType,
         key: f.key,
         pairs: arr,
+    }
+}
+
+// transformIntoField
+export const transformIntoField = (f: fieldVO): fieldFromAPI => {
+    let v: any = null;
+    switch (f.fieldType) {
+        case 1:
+            //  KV
+            v = f.pairs[0].pairKey;
+            break;
+        case 2:
+            //  LIST
+            v = [];
+            f.pairs.forEach((item, idx) => {
+                v.push(item.pairKey);
+            })
+            break
+        case 3:
+            //  DICT
+            v = {};
+            f.pairs.forEach((item, idx) => {
+                v[item.key] = item.pairKey
+            })
+            break
+    }
+
+    return {
+        fieldType: f.fieldType,
+        key: f.key,
+        value: v,
     }
 }

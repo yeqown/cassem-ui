@@ -39,7 +39,7 @@
             <a-typography-paragraph
               v-model:content="pair.key"
               :editable="
-                pair.key != '-'
+                pair.key && pair.key != '-'
                   ? { maxlength: 50, autoSize: { maxRows: 1, minRows: 1 } }
                   : false
               "
@@ -54,8 +54,14 @@
 <script>
 import { onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { getContainerDetail } from "/@/services/container";
-import { mappingFT, transformField } from "/@/services/mapping";
+import { getContainerDetail, saveContainer } from "/@/services/container";
+import {
+  mappingFT,
+  transformField,
+  transformIntoField,
+} from "/@/services/mapping";
+import { message } from "ant-design-vue";
+
 export default {
   props: {
     editingMode: "",
@@ -65,8 +71,8 @@ export default {
     // const formRef = ref();
     const route = useRoute();
     const state = reactive({
-      ns: "",
-      key: "",
+      ns: route.params.ns,
+      key: route.params.containerKey,
       fields: [],
       isCreating: props.editingMode === "creating",
     });
@@ -75,17 +81,52 @@ export default {
       return mappingFT[ft];
     };
 
-    const hdlCreateOrUpdate = () => {
+    const testData = () => {
+      state.fields.push(
+        {
+          fieldType: 1,
+          key: "kv",
+          pairs: [{ pairKey: "i" }],
+        },
+        {
+          fieldType: 2,
+          key: "list-demo",
+          pairs: [{ pairKey: "i" }, { pairKey: "i" }, { pairKey: "i" }],
+        },
+        {
+          fieldType: 3,
+          key: "dict-demo",
+          pairs: [
+            { key: "int", pairKey: "i" },
+            { key: "int2", pairKey: "i" },
+          ],
+        }
+      );
+      setTimeout(() => {}, 2);
+    };
+    const hdlCreateOrUpdate = async () => {
+      testData();
+
       // create or update container
-      console.error("implement me");
+      // console.log(state.fields);
+      if (!state.key || state.key === "new") {
+        message.error("Invalid container key!");
+        return;
+      }
+
+      let fields = [];
+      state.fields.forEach((item, idx) => {
+        fields.push(transformIntoField(item));
+      });
+
+      await saveContainer(state.ns, state.key, fields);
     };
 
     onMounted(async () => {
       // console.log("==============", route.params, route.fullPath, route.props);
       const { ns, containerKey } = route.params;
-      state.ns = ns;
-      state.key = containerKey;
       if (state.isCreating) {
+        state.key = "";
         // in creating mode, DO NOT request from remote API server.
         return;
       }
