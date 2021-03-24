@@ -1,26 +1,26 @@
 <template>
-  <a-card>
-    <a-page-header
-      title="PAIRS"
-      :sub-title="`pairs of the namespace [${state.ns}]`"
-      @back="() => $router.go(-1)"
-    >
-      <template #extra>
-        <a-input-search
-          v-model:value="state.pairKeyPattern"
-          placeholder="input pair key pattern"
-          :loading="state.searchLoading"
-          enter-button
-          @search="hdlSearch"
-          @pressEnter="hdlSearch"
-          style="width: 200px"
-        />
-        <a-button type="primary">
-          <template #icon><PlusCircleOutlined /></template>
-        </a-button>
-      </template>
-    </a-page-header>
+  <a-page-header
+    title="PAIRS"
+    :sub-title="`pairs of the namespace [${state.ns}]`"
+    @back="() => $router.go(-1)"
+  >
+    <template #extra>
+      <a-input-search
+        v-model:value="state.pairKeyPattern"
+        placeholder="input pair key pattern"
+        :loading="state.searchLoading"
+        enter-button
+        @search="hdlSearch"
+        @pressEnter="hdlSearch"
+        style="width: 200px"
+      />
+      <a-button type="primary">
+        <template #icon><PlusCircleOutlined /></template>
+      </a-button>
+    </template>
+  </a-page-header>
 
+  <div style="padding: 0 24px">
     <a-table :columns="state.columns" :data-source="state.pairs">
       <template #pairKey="{ record }">
         "
@@ -41,7 +41,7 @@
         <span>{{ record.value }}</span>
       </template>
     </a-table>
-  </a-card>
+  </div>
 </template>
 
 <script>
@@ -96,7 +96,7 @@ export default {
         key: state.pairKeyPattern,
       });
       state.pairs = data.pairs;
-      console.log(state.pairs);
+      // console.log(state.pairs);
     };
 
     const translateDatatype = (dt) => {

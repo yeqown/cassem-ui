@@ -1,20 +1,20 @@
 <template>
-  <a-card>
-    <a-page-header
-      title="New"
-      :sub-title="`create a container under the namespace [${state.ns}]`"
-      @back="() => $router.go(-1)"
-    >
-      <template #extra>
-        <a-input
-          v-model:value="state.key"
-          :disabled="!state.isCreating"
-          style="width: 200px"
-        />
-        <a-button type="primary" @click="hdlCreateOrUpdate"> SAVE </a-button>
-      </template>
-    </a-page-header>
+  <a-page-header
+    title="New"
+    :sub-title="`create a container under the namespace [${state.ns}]`"
+    @back="() => $router.go(-1)"
+  >
+    <template #extra>
+      <a-input
+        v-model:value="state.key"
+        :disabled="!state.isCreating"
+        style="width: 200px"
+      />
+      <a-button type="primary" @click="hdlCreateOrUpdate"> SAVE </a-button>
+    </template>
+  </a-page-header>
 
+  <div style="padding: 0 24px">
     <!-- fields table -->
     <a-table :columns="columns" :data-source="state.fields" bordered>
       <template #fieldkey="{ record: field }">
@@ -48,7 +48,7 @@
         </a-table>
       </template>
     </a-table>
-  </a-card>
+  </div>
 </template>
 
 <script>

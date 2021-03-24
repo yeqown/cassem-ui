@@ -23,7 +23,9 @@
     </header>
 
     <a-layout-content style="padding: 50px; height: 100%">
-      <router-view></router-view>
+      <a-card>
+        <router-view></router-view>
+      </a-card>
     </a-layout-content>
 
     <a-layout-footer style="text-align: center">

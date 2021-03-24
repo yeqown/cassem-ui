@@ -1,26 +1,26 @@
 <template>
-  <a-card>
-    <a-page-header
-      title="CONTAINERS"
-      :sub-title="`containers of the namespace [${state.ns}]`"
-      @back="() => $router.go(-1)"
-    >
-      <template #extra>
-        <a-input-search
-          v-model:value="state.containerKeyPattern"
-          placeholder="input container key pattern"
-          :loading="state.searchLoading"
-          enter-button
-          @search="hdlSearch"
-          @pressEnter="hdlSearch"
-          style="width: 200px"
-        />
-        <a-button type="primary" @click="hdlCreateContainer">
-          <template #icon><PlusCircleOutlined /></template>
-        </a-button>
-      </template>
-    </a-page-header>
+  <a-page-header
+    title="CONTAINERS"
+    :sub-title="`containers of the namespace [${state.ns}]`"
+    @back="() => $router.go(-1)"
+  >
+    <template #extra>
+      <a-input-search
+        v-model:value="state.containerKeyPattern"
+        placeholder="input container key pattern"
+        :loading="state.searchLoading"
+        enter-button
+        @search="hdlSearch"
+        @pressEnter="hdlSearch"
+        style="width: 200px"
+      />
+      <a-button type="primary" @click="hdlCreateContainer">
+        <template #icon><PlusCircleOutlined /></template>
+      </a-button>
+    </template>
+  </a-page-header>
 
+  <div style="padding: 0 24px">
     <a-table :columns="columns" :data-source="state.containers">
       <!-- container custome render -->
       <template #containerKey="{ record }">
@@ -39,7 +39,7 @@
         </a-button>
       </template>
     </a-table>
-  </a-card>
+  </div>
 </template>
 
 <script>
