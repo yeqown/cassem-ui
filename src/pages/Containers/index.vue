@@ -1,8 +1,29 @@
 <template>
   <a-card>
-    <a-table :columns="columns" :data-source="containers">
+    <a-page-header
+      title="CONTAINERS"
+      :sub-title="`containers of the namespace [${state.ns}]`"
+      @back="() => $router.go(-1)"
+    >
+      <template #extra>
+        <a-input-search
+          v-model:value="state.containerKeyPattern"
+          placeholder="input container key pattern"
+          :loading="state.searchLoading"
+          enter-button
+          @search="hdlSearch"
+          @pressEnter="hdlSearch"
+          style="width: 200px"
+        />
+        <a-button type="primary">
+          <template #icon><PlusCircleOutlined /></template>
+        </a-button>
+      </template>
+    </a-page-header>
+
+    <a-table :columns="state.columns" :data-source="state.containers">
       <template #containerKey="{ record }">
-        <router-link :to="`/namespaces/${ns}/containers/${record.key}`">
+        <router-link :to="`/namespaces/${state.ns}/containers/${record.key}`">
           <a-tag color="geekblue">{{ record.key.toUpperCase() }}</a-tag>
         </router-link>
       </template>
@@ -13,13 +34,19 @@
 <script>
 import { reactive, onMounted, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
-import { getCtList } from "/@/services/container";
+import { pagingContainers } from "/@/services/container";
+import { PlusCircleOutlined } from "@ant-design/icons-vue";
 export default {
+  components: {
+    PlusCircleOutlined,
+  },
   setup() {
     const route = useRoute();
     const state = reactive({
       containers: [],
       ns: route.params.ns,
+      containerKeyPattern: "",
+      searchLoading: false,
       columns: [
         {
           title: "CONTAINER-KEY",
@@ -41,15 +68,27 @@ export default {
     });
 
     const getContainer = async () => {
-      const data = await getCtList(state.ns);
+      state.searchLoading = true;
+      const data = await pagingContainers(state.ns, {
+        key: state.containerKeyPattern,
+      });
       state.containers = data.containers;
-      console.log(data);
+      state.searchLoading = false;
+    };
+
+    const hdlSearch = () => {
+      // console.log("clicked", state.containerKeyPattern);
+      // if (state.containerKeyPattern === "") {
+      //   return;
+      // }
+      getContainer();
     };
 
     onMounted(async () => {
       getContainer();
     });
-    return state;
+
+    return { state, hdlSearch };
   },
 };
 </script>

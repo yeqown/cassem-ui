@@ -1,7 +1,7 @@
 <template>
   <a-layout class="layout">
     <header>
-      <h2 class="logo">CASSEM·UI</h2>
+      <router-link to="/"><h2 class="logo">CASSEM·UI</h2></router-link>
       <a-menu
         theme="light"
         mode="horizontal"
@@ -40,7 +40,7 @@ export default defineComponent({
   name: "App",
   setup() {
     const state = reactive({
-      selectedKeys: ["ns"],
+      selectedKeys: [],
     });
 
     const hdlClickMenuItem = ({ key }) => {

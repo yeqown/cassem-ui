@@ -5,6 +5,7 @@ import Containers from "./pages/Containers/index.vue";
 import ContainerEdit from "./pages/Containers/edit.vue";
 import Pairs from "./pages/Pairs/index.vue";
 import PairEdit from "./pages/Pairs/edit.vue";
+import Index from './pages/index.vue';
 
 const routes = [
   {
@@ -34,7 +35,7 @@ const routes = [
   // 重定向
   {
     path: "/",
-    redirect: "/namespaces",
+    component: Index,
   },
 ];
 

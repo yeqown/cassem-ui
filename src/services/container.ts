@@ -1,8 +1,9 @@
 import ajax from "../utils/ajax";
 
-export const getCtList = (id: String) => {
-  return ajax(`/api/namespaces/${id}/containers`);
+export const pagingContainers = (ns: string, args: any) => {
+  return ajax(`/api/namespaces/${ns}/containers`, { params: { ...args } });
 };
-export const getCtConfig = (nsId: String, ctId: String) => {
-  return ajax(`/api/namespaces/${nsId}/containers/${ctId}`);
+
+export const getCtConfig = (ns: string, containerKey: string) => {
+  return ajax(`/api/namespaces/${ns}/containers/${containerKey}`);
 };

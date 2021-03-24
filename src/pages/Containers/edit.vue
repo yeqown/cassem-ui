@@ -9,7 +9,11 @@
     </a-form-item>
   </a-form>
 
-  <a-table :columns="state.columns" :data-source="state.fields" bordered>
+  <a-table :columns="columns" :data-source="state.fields" bordered>
+    <template #fieldkey="{ record: field }">
+      <a-typography-paragraph v-model:content="field.key" editable />
+    </template>
+
     <template #fieldtype="{ record: field }">
       <a-tag color="geekblue">{{
         translateFieldType(field.fieldType).toUpperCase()
@@ -24,6 +28,16 @@
         :pagination="false"
         :showHeader="false"
       >
+        <template #alias="{ record: pair }">
+          <a-typography-paragraph
+            v-model:content="pair.key"
+            :editable="
+              pair.key != '-'
+                ? { maxlength: 50, autoSize: { maxRows: 1, minRows: 1 } }
+                : false
+            "
+          />
+        </template>
       </a-table>
     </template>
   </a-table>
@@ -42,19 +56,6 @@ export default {
       list: [],
       key: "",
       fields: [],
-      columns: [
-        {
-          title: "FIELD KEY",
-          dataIndex: "key",
-        },
-        {
-          title: "FIELD TYPE",
-          dataIndex: "fieldType",
-          slots: {
-            customRender: "fieldtype",
-          },
-        },
-      ],
     });
 
     let validatePass = async (rule, value) => {
@@ -105,14 +106,37 @@ export default {
       console.log(state.fields);
     });
 
+    const columns = [
+      {
+        title: "FIELD KEY",
+        dataIndex: "key",
+        slots: {
+          customRender: "fieldkey",
+        },
+      },
+      {
+        title: "FIELD TYPE",
+        dataIndex: "fieldType",
+        slots: {
+          customRender: "fieldtype",
+        },
+      },
+    ];
+
     const fieldPairsColumns = [
       {
         title: "ALIAS",
         dataIndex: "key",
+        slots: {
+          customRender: "alias",
+        },
       },
       {
         title: "PAIR KEY",
         dataIndex: "pairKey",
+        slots: {
+          customRender: "pairKey",
+        },
       },
     ];
 
@@ -127,6 +151,8 @@ export default {
       resetForm,
       formRef,
       translateFieldType,
+
+      columns,
       fieldPairsColumns,
     };
   },

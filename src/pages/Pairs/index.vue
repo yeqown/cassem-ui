@@ -1,5 +1,26 @@
 <template>
   <a-card>
+    <a-page-header
+      title="PAIRS"
+      :sub-title="`pairs of the namespace [${state.ns}]`"
+      @back="() => $router.go(-1)"
+    >
+      <template #extra>
+        <a-input-search
+          v-model:value="state.pairKeyPattern"
+          placeholder="input pair key pattern"
+          :loading="state.searchLoading"
+          enter-button
+          @search="hdlSearch"
+          @pressEnter="hdlSearch"
+          style="width: 200px"
+        />
+        <a-button type="primary">
+          <template #icon><PlusCircleOutlined /></template>
+        </a-button>
+      </template>
+    </a-page-header>
+
     <a-table :columns="state.columns" :data-source="state.pairs">
       <template #pairKey="{ record }">
         "
@@ -26,14 +47,20 @@
 <script>
 import { reactive, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { getPairList } from "/@/services/namespace";
+import { pagingPairs } from "/@/services/pairs";
 import { mappingDT } from "/@/services/mapping";
+import { PlusCircleOutlined } from "@ant-design/icons-vue";
 export default {
+  components: {
+    PlusCircleOutlined,
+  },
   setup() {
     const route = useRoute();
     const state = reactive({
       ns: route.params.ns,
       pairs: [],
+      pairKeyPattern: "",
+      searchLoading: false,
       columns: [
         {
           title: "KEY",
@@ -64,7 +91,10 @@ export default {
     });
 
     const getPair = async () => {
-      const data = await getPairList(state.ns, { limit: 10 });
+      const data = await pagingPairs(state.ns, {
+        limit: 10,
+        key: state.pairKeyPattern,
+      });
       state.pairs = data.pairs;
       console.log(state.pairs);
     };
@@ -73,11 +103,19 @@ export default {
       return mappingDT[dt];
     };
 
+    const hdlSearch = () => {
+      // console.log("clicked", state.containerKeyPattern);
+      // if (state.containerKeyPattern === "") {
+      //   return;
+      // }
+      getPair();
+    };
+
     onMounted(async () => {
       getPair();
     });
 
-    return { state, translateDatatype };
+    return { state, translateDatatype, hdlSearch };
   },
 };
 </script>

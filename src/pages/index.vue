@@ -1,42 +1,45 @@
 <template>
-  <h1>{{ msg }}</h1>
+  <a-card>
+    <a-timeline mode="alternate">
+      <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>
+      <a-timeline-item color="green"
+        >Solve initial network problems 2015-09-01</a-timeline-item
+      >
 
-  <p>
-    Recommended IDE setup:
-    <a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
-    +
-    <a
-      href="https://marketplace.visualstudio.com/items?itemName=octref.vetur"
-      target="_blank"
-      >Vetur</a
-    >
-    or
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-    (if using
-    <code>&lt;script setup&gt;</code>)
-  </p>
+      <a-timeline-item>
+        <template #dot
+          ><ClockCircleOutlined style="font-size: 16px"
+        /></template>
+        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+        accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab
+        illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+        explicabo.
+      </a-timeline-item>
 
-  <p>See <code>README.md</code> for more information.</p>
+      <a-timeline-item color="red"
+        >Network problems being solved 2015-09-01</a-timeline-item
+      >
+      <a-timeline-item>Create a services site 2015-09-01</a-timeline-item>
 
-  <p>
-    <a href="https://vitejs.dev/guide/features.html" target="_blank"
-      >Vite Docs</a
-    >
-    |
-    <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
-  </p>
-
-  <button @click="count++">count is: {{ count }}</button>
-  <p>
-    Edit
-    <code>components/HelloWorld.vue</code> to test hot module replacement.
-  </p>
+      <a-timeline-item>
+        <template #dot
+          ><ClockCircleOutlined style="font-size: 16px"
+        /></template>
+        Technical testing 2015-09-01
+      </a-timeline-item>
+    </a-timeline>
+  </a-card>
 </template>
 
+
 <script lang="ts">
+import { ClockCircleOutlined } from "@ant-design/icons-vue";
 import { ref, defineComponent } from "vue";
 export default defineComponent({
-  name: "HelloWorld",
+  components: {
+    ClockCircleOutlined,
+  },
+  name: "Index",
   props: {
     msg: {
       type: String,
