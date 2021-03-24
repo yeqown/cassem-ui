@@ -1,6 +1,6 @@
 // import Vue, { createApp } from "vue";
 import { createWebHashHistory, createRouter } from "vue-router";
-import NameSpaces from "./pages/NameSpaces/index.vue";
+import NameSpaces from "./pages/Namespaces/index.vue";
 import Containers from "./pages/Containers/index.vue";
 import ContainerEdit from "./pages/Containers/edit.vue";
 import Pairs from "./pages/Pairs/index.vue";

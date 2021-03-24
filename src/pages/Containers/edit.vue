@@ -1,40 +1,39 @@
 <template>
-  <a-form :model="state" :layout="layout">
-    <a-form-item label="Key">
-      <a-input v-model:value="state.key" />
+  <a-form :model="state" :label-col="labelCol" :wrapper-col="wrapperCol">
+    <a-form-item label="CONTAINER KEY">
+      <a-input v-model:value="state.key" :disabled="true" />
+    </a-form-item>
+
+    <a-form-item label="OPERATIONS">
+      <a-button type="primary">UPDATE</a-button>
     </a-form-item>
   </a-form>
 
-  <a-table :columns="columns" :data-source="state.fields" bordered>
-    <template #expandedRowRender="{ record }">
-      <p style="margin: 0" class="config-key">
+  <a-table :columns="state.columns" :data-source="state.fields" bordered>
+    <template #fieldtype="{ record: field }">
+      <a-tag color="geekblue">{{
+        translateFieldType(field.fieldType).toUpperCase()
+      }}</a-tag>
+    </template>
 
-        <div class="item" v-if="record.fieldType === 3 ">
-          <div v-for="(item,index) in record.value">
-            key:{{index}}
-          </div>
-        </div>
-        <div class="item" v-if="record.fieldType === 3">
-          <div v-for="(item,index) in record.value">
-            pair key:{{item.key}}
-          </div>
-        </div>
-        <div class="item" v-else-if="record.fieldType === 2">
-          <div v-for="(item,index) in record.value">
-            pair key:{{item.key}}
-          </div>
-        </div>
-        <div class="item" v-else>
-            pair key:{{record.value.key}}
-        </div>
-      </p>
+    <!-- field pairs -->
+    <template #expandedRowRender="{ record: field }">
+      <a-table
+        :columns="fieldPairsColumns"
+        :data-source="field.pairs"
+        :pagination="false"
+        :showHeader="false"
+      >
+      </a-table>
     </template>
   </a-table>
 </template>
+
 <script>
 import { onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getCtConfig } from "/@/services/container";
+import { mappingFT, transformField } from "/@/services/mapping";
 export default {
   setup() {
     const formRef = ref();
@@ -43,17 +42,20 @@ export default {
       list: [],
       key: "",
       fields: [],
+      columns: [
+        {
+          title: "FIELD KEY",
+          dataIndex: "key",
+        },
+        {
+          title: "FIELD TYPE",
+          dataIndex: "fieldType",
+          slots: {
+            customRender: "fieldtype",
+          },
+        },
+      ],
     });
-    const columns = [
-      {
-        title: "key",
-        dataIndex: "key",
-      },
-      {
-        title: "fieldsType",
-        dataIndex: "fieldType",
-      },
-    ];
 
     let validatePass = async (rule, value) => {
       if (value === "") {
@@ -62,10 +64,10 @@ export default {
         if (formState.checkPass !== "") {
           formRef.value.validateField("checkPass");
         }
-
         return Promise.resolve();
       }
     };
+
     const rules = {
       pass: [
         {
@@ -73,15 +75,6 @@ export default {
           trigger: "change",
         },
       ],
-    };
-
-    const layout = {
-      labelCol: {
-        span: 4,
-      },
-      wrapperCol: {
-        span: 14,
-      },
     };
 
     const handleFinish = (values) => {
@@ -95,32 +88,58 @@ export default {
     const resetForm = () => {
       formRef.value.resetFields();
     };
+
+    const translateFieldType = (ft) => {
+      return mappingFT[ft];
+    };
+
     onMounted(async () => {
       const { ns, containerKey } = route.params;
       const data = await getCtConfig(ns, containerKey);
       state.key = data.key;
-      state.fields = data.fields;
+      // state.fields = data.fields;
+      data.fields.forEach((field, idx) => {
+        state.fields.push(transformField(field));
+      });
+
+      console.log(state.fields);
     });
+
+    const fieldPairsColumns = [
+      {
+        title: "ALIAS",
+        dataIndex: "key",
+      },
+      {
+        title: "PAIR KEY",
+        dataIndex: "pairKey",
+      },
+    ];
+
     return {
+      labelCol: { span: 3 },
+      wrapperCol: { span: 4 },
       state,
       rules,
-      layout,
+      // layout,
       handleFinish,
       handleFinishFailed,
       resetForm,
       formRef,
-      columns,
+      translateFieldType,
+      fieldPairsColumns,
     };
   },
 };
 </script>
+
 <style lang="less" scoped>
 :deep(.config-key) {
-  background:white;
+  // background: white;
   display: flex;
-  padding:10px;
-  .item{
-    flex:1
+  // padding: 10px;
+  .item {
+    flex: 1;
   }
 }
 </style>

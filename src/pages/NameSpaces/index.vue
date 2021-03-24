@@ -23,7 +23,7 @@
         <template #cover>
           <img
             alt="example"
-            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+            src="http://doulaizhuan-prod1-1251021022.image.myqcloud.com/202004032355280544c44743c30aaedcd89fb81397030e1265140919.png?imageMogr2/thumbnail/600x/format/png/interlace/0"
           />
         </template>
 

@@ -2,9 +2,9 @@
   <a-card>
     <a-table :columns="columns" :data-source="containers">
       <template #containerKey="{ record }">
-          <router-link :to="`/namespaces/${ns}/containers/${record.key}`">
-            <a-tag color='geekblue'>{{ record.key.toUpperCase() }}</a-tag>
-          </router-link>
+        <router-link :to="`/namespaces/${ns}/containers/${record.key}`">
+          <a-tag color="geekblue">{{ record.key.toUpperCase() }}</a-tag>
+        </router-link>
       </template>
     </a-table>
   </a-card>
@@ -30,6 +30,10 @@ export default {
           },
         },
         {
+          title: "NAMESAPCE",
+          dataIndex: "namespace",
+        },
+        {
           title: "CHECKSUM",
           dataIndex: "checkSum",
         },
@@ -39,9 +43,9 @@ export default {
     const getContainer = async () => {
       const data = await getCtList(state.ns);
       state.containers = data.containers;
-      console.log(data)
+      console.log(data);
     };
-    
+
     onMounted(async () => {
       getContainer();
     });
