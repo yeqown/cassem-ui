@@ -1,4 +1,4 @@
-export const mappingDT = {
+export const mappingDT: Record<number, string> = {
     1: "Integer",
     2: "String",
     3: "Float",
@@ -7,10 +7,18 @@ export const mappingDT = {
     6: "Dict",
 };
 
-export const mappingFT = {
+export const translateDatatype = (dt: number): string => {
+    return mappingDT[dt];
+}
+
+export const mappingFT: Record<number, string> = {
     1: "KV",
     2: "Array",
     3: "Dictionary",
+}
+
+export const translateFieldType = (dt: number): string => {
+    return mappingFT[dt];
 }
 
 interface pairFromAPI {

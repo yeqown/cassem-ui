@@ -48,7 +48,7 @@
 import { reactive, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { pagingPairs } from "/@/services/pairs";
-import { mappingDT } from "/@/services/mapping";
+import { translateDatatype } from "/@/services/mapping";
 import { PlusCircleOutlined } from "@ant-design/icons-vue";
 export default {
   components: {
@@ -100,10 +100,6 @@ export default {
       // console.log(state.pairs);
     };
 
-    const translateDatatype = (dt) => {
-      return mappingDT[dt];
-    };
-
     const hdlSearch = () => {
       // console.log("clicked", state.containerKeyPattern);
       // if (state.containerKeyPattern === "") {
@@ -120,7 +116,7 @@ export default {
       getPair();
     });
 
-    return { state, translateDatatype, hdlSearch, hdlCreateClick };
+    return { state, hdlSearch, hdlCreateClick, translateDatatype };
   },
 };
 </script>
