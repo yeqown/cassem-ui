@@ -7,7 +7,6 @@ let instance = axios.create({
 
 instance.interceptors.response.use(
   (res) => {
-    message.success("Request OK");
     if (res.data.errcode === 0) {
       if (res.data.data) {
         return res.data.data;
@@ -16,9 +15,9 @@ instance.interceptors.response.use(
     }
   },
   (err) => {
-    console.error(err);
+    console.log(err.response);
     message.error({
-      content: err.errmsg || err.message,
+      content: err.response.data.errmsg || err.errmsg || err.message,
     });
   }
 );

@@ -13,12 +13,13 @@
     <a-form :model="state.form" :label-col="labelCol" :wrapper-col="wrapperCol">
       <!-- key -->
       <a-form-item label="Key">
-        <a-input v-model:value="state.form.key" />
+        <a-input v-model:value="state.form.key" :disabled="!state.isCreating" />
       </a-form-item>
 
       <!-- datatype -->
       <a-form-item label="Datatype">
         <a-select
+          :disabled="!state.isCreating"
           v-model:value="state.form.datatype"
           placeholder="please select your zone"
           @change="hdlDatatypeSwitch"
@@ -35,57 +36,27 @@
 
       <!-- value container node, should be changed while datatype changed -->
       <a-form-item label="Value" v-show="state.form.datatype != 0">
-        <!-- KV -->
-        <a-input
-          v-model:value="state.form.value"
-          v-show="state.form.datatype in [1, 2, 3, 0]"
+        <textarea
+          rows="3"
+          v-model="jsonstr"
+          class="ant-input"
+          @keydown.tab="watchTabPress"
         />
-
-        <!-- boolean -->
-        <a-select
-          v-model:value="state.form.value"
-          placeholder="Choose one"
-          v-show="state.form.datatype === 4"
-        >
-          <a-select-option :value="true">True</a-select-option>
-          <a-select-option :value="false">False</a-select-option>
-        </a-select>
-
-        <!-- LIST -->
-        <a-list
-          v-show="state.form.datatype === 5"
-          :data-source="state.form.listValue"
-        >
-          <template #renderItem="{ item }">
-            <a-list-item
-              ><span>{{ item }}</span></a-list-item
-            >
-          </template>
-
-          <template #footer>
-            <a-button type="dashed" style="width: 100%" @click="addValueToList">
-              <PlusOutlined />
-              Add item
-            </a-button>
-          </template>
-        </a-list>
-
-        <!-- LIST -->
-        <a-table
-          v-show="state.form.datatype === 6"
-          :data-source="state.form.dictValue"
-        >
-        </a-table>
+        <pre v-highlightjs><code class="json">{{jsonstr}}</code></pre>
       </a-form-item>
     </a-form>
   </div>
 </template>
 
 <script>
-import { onMounted, reactive, ref } from "vue";
-import { useRoute } from "vue-router";
+import { onMounted, reactive, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { getPairDetail, savePair } from "/@/services/pairs";
-import { mappingDT, transformIntoPair } from "/@/services/mapping";
+import {
+  mappingDT,
+  transformIntoPair,
+  getDefaultValueOfDatatype,
+} from "/@/services/mapping";
 import { message } from "ant-design-vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
 
@@ -101,14 +72,13 @@ export default {
   setup(props) {
     // const formRef = ref();
     const route = useRoute();
+    const router = useRouter();
     const state = reactive({
       ns: route.params.ns,
       form: {
         key: route.params.pairKey,
         datatype: 0,
         value: null,
-        listValue: [],
-        dictValue: [],
       },
       isCreating: props.editingMode === "creating",
     });
@@ -120,25 +90,9 @@ export default {
     // datatype switch event
     const hdlDatatypeSwitch = (value, option) => {
       console.log("switched=========", value, option);
-      switch (value) {
-        case 4:
-          state.form.value = false;
-          break;
-        case 5:
-          // list datatype initialize "string[]"
-          state.form.listValue = [];
-          break;
-        case 6:
-          // dict datatye initialize {key, datatype, string}[]"
-          state.form.dictValue = [];
-          break;
-        default:
-          state.form.value = "";
-      }
-    };
-
-    const addValueToList = () => {
-      state.form.listValue.push("");
+      state.form.value = {
+        value: getDefaultValueOfDatatype(value),
+      };
     };
 
     const hdlCreateOrUpdate = async () => {
@@ -151,10 +105,37 @@ export default {
       let form = {
         key: state.form.key,
         datatype: state.form.datatype,
-        value: transformIntoPair(state.form),
+        value: transformIntoPair(jsonstr.value),
       };
-      await savePair(state.ns, form);
+      let data = await savePair(state.ns, form);
+      if (data.errcode === 0) {
+        message.success(`'${state.form.key}' saved`);
+        router.go(-1);
+      }
     };
+
+    const watchTabPress = (e) => {
+      console.log(e);
+      e.preventDefault();
+      const el = e.srcElement;
+      // FIXME(@yeqown): tab replacing wrong.
+      jsonstr.value =
+        jsonstr.value.substring(0, el.selectionStart) +
+        "\t" +
+        jsonstr.value.substring(el.selectionEnd - 1);
+    };
+
+    const jsonstr = ref("");
+
+    // watch state.form.value
+    watch(
+      () => {
+        return state.form.value;
+      },
+      (value, preValue) => {
+        jsonstr.value = JSON.stringify(value, null, "\t");
+      }
+    );
 
     onMounted(async () => {
       // console.log("==============", route.params, route.fullPath, route.props);
@@ -168,29 +149,20 @@ export default {
       const data = await getPairDetail(ns, pairKey);
       let { key, datatype, value } = data;
       state.form = { key, datatype };
-
-      switch (datatype) {
-        case 5:
-          state.form.listValue = value;
-          break;
-        case 6:
-          console.error("implement me to transform dict into arrar VO");
-          // state.form.dictValue = value;
-          break;
-        default:
-          state.form.value = value;
-          break;
-      }
+      state.form.value = { value: value };
     });
 
     return {
       state,
+
       translateDataType,
       hdlCreateOrUpdate,
       hdlDatatypeSwitch,
-      addValueToList,
+      watchTabPress,
+
       labelCol: { span: 4 },
-      wrapperCol: { span: 8 },
+      wrapperCol: { span: 12 },
+      jsonstr,
     };
   },
 };

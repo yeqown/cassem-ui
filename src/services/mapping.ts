@@ -119,34 +119,47 @@ export const transformIntoField = (f: fieldVO): fieldFromAPI => {
     }
 }
 
-interface editForm {
-    key: string
-    datatype: number
-    value: any
-    listValue: any[],
-    dictValue: Record<string, any>[],
-}
+// interface editForm {
+//     key: string
+//     datatype: number
+//     value: {
+//         value: any
+//     }
+// }
 
+interface pairValueValue {
+    value: any
+}
 // transformIntoPair
 // TODO(@yeqown): convert from form model into API request body.
-export const transformIntoPair = (p: editForm): any => {
-    let v: any = null;
+export const transformIntoPair = (jsonstr: string): any => {
+    console.log("jsonstr===========", jsonstr);
+    let obj: pairValueValue = JSON.parse(jsonstr)
+    return obj.value
+}
 
-    switch (p.datatype) {
+export const getDefaultValueOfDatatype = (dt: number): any => {
+    let v: any = null;
+    switch (dt) {
+        case 1:
+            v = 1;
+            break;
+        case 2:
+            v = "";
+            break;
+        case 3:
+            v = 0.1;
+            break;
+        case 4:
+            v = false;
+            break;
         case 5:
-            v = p.listValue;
+            v = [];
             break;
         case 6:
-            v = p.dictValue;
-            break;
-        default:
-            v = p.value;
+            v = {};
             break;
     }
 
-    return {
-        key: p.key,
-        datatype: p.datatype,
-        value: v,
-    }
+    return v;
 }

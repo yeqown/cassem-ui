@@ -294,7 +294,10 @@ export default {
         fields.push(transformIntoField(item));
       });
 
-      await saveContainer(state.ns, state.key, fields);
+      let data = await saveContainer(state.ns, state.key, fields);
+      if (data.errcode === 0) {
+        message.success(`'${state.key}' saved`);
+      }
     };
 
     onMounted(async () => {
