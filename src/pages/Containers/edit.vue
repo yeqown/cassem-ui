@@ -1,7 +1,7 @@
 <template>
   <a-page-header
-    title="New"
-    :sub-title="`create a container under the namespace [${state.ns}]`"
+    :title="state.isCreating ? 'New' : 'Edit'"
+    :sub-title="`create or update a container under the namespace [${state.ns}]`"
     @back="() => $router.go(-1)"
   >
     <template #extra>

@@ -15,6 +15,7 @@ export const mappingFT = {
 
 interface pairFromAPI {
     key: string
+    datatype: number
     value: {
         pairKey: string
         value: any
@@ -106,6 +107,38 @@ export const transformIntoField = (f: fieldVO): fieldFromAPI => {
     return {
         fieldType: f.fieldType,
         key: f.key,
+        value: v,
+    }
+}
+
+interface editForm {
+    key: string
+    datatype: number
+    value: any
+    listValue: any[],
+    dictValue: Record<string, any>[],
+}
+
+// transformIntoPair
+// TODO(@yeqown): convert from form model into API request body.
+export const transformIntoPair = (p: editForm): any => {
+    let v: any = null;
+
+    switch (p.datatype) {
+        case 5:
+            v = p.listValue;
+            break;
+        case 6:
+            v = p.dictValue;
+            break;
+        default:
+            v = p.value;
+            break;
+    }
+
+    return {
+        key: p.key,
+        datatype: p.datatype,
         value: v,
     }
 }

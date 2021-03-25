@@ -17,7 +17,7 @@ interface pair {
 export const savePair = (ns: string, pair: pair) => {
     let data = {
         datatype: pair.datatype,
-        value: pair.value, // TODO(@yeqown): should convert into corret type rather than string.
+        value: pair.value,
     };
 
     return ajax.post(`/api/namespaces/${ns}/pairs/${pair.key}`, data);
