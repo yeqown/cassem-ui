@@ -1,7 +1,9 @@
 <template>
   <a-layout class="layout">
     <header>
-      <router-link to="/"><h2 class="logo">CASSEM·UI</h2></router-link>
+      <router-link to="/">
+        <img :src="textLogoURL" class="logo" />
+      </router-link>
       <a-menu
         theme="light"
         mode="horizontal"
@@ -37,6 +39,7 @@
 <script>
 import { defineComponent, reactive } from "vue";
 import router from "./router";
+import textLogoURL from "/@/assets/text-logo.png";
 
 export default defineComponent({
   name: "App",
@@ -60,7 +63,7 @@ export default defineComponent({
       }
     };
 
-    return { state, hdlClickMenuItem };
+    return { state, hdlClickMenuItem, textLogoURL };
   },
 });
 </script>
@@ -77,8 +80,8 @@ export default defineComponent({
 .logo {
   float: left;
   width: 120px;
-  height: 31px;
-  margin: 16px 24px 16px 50px;
+  height: 18px;
+  margin: 20px 24px 16px 50px;
   color: #5757d2;
   /* background: rgba(218 , 36, 36, 0.3); */
 }
