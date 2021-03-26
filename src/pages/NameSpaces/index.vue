@@ -5,8 +5,8 @@
     @back="() => $router.go(-1)"
   >
     <template #extra>
-      <a-button type="primary" @click="hdlCreateClick">
-        <template #icon><PlusCircleOutlined /></template>
+      <a-button type="dashed" style="width: 150px" @click="hdlCreateClick">
+        <template #icon><PlusOutlined /> New Namespace </template>
       </a-button>
     </template>
   </a-page-header>
@@ -82,14 +82,14 @@ import {
   UnorderedListOutlined,
   EditOutlined,
   ContainerOutlined,
-  PlusCircleOutlined,
+  PlusOutlined,
 } from "@ant-design/icons-vue";
 export default {
   components: {
     UnorderedListOutlined,
     EditOutlined,
     ContainerOutlined,
-    PlusCircleOutlined,
+    PlusOutlined,
   },
   setup() {
     const state = reactive({

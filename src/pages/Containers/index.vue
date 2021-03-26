@@ -14,8 +14,8 @@
         @pressEnter="hdlSearch"
         style="width: 200px"
       />
-      <a-button type="primary" @click="hdlCreateContainer">
-        <template #icon><PlusCircleOutlined /></template>
+      <a-button type="dashed" @click="hdlCreateContainer">
+        <template #icon><PlusOutlined /></template>
       </a-button>
     </template>
   </a-page-header>
@@ -46,10 +46,10 @@
 import { reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { pagingContainers, delContainer } from "/@/services/container";
-import { PlusCircleOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 export default {
   components: {
-    PlusCircleOutlined,
+    PlusOutlined,
     DeleteOutlined,
   },
   setup() {
