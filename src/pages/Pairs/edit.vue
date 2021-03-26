@@ -36,13 +36,8 @@
 
       <!-- value container node, should be changed while datatype changed -->
       <a-form-item label="Value" v-show="state.form.datatype != 0">
-        <textarea
-          rows="3"
-          v-model="jsonstr"
-          class="ant-input"
-          @keydown.tab="watchTabPress"
-        />
-        <pre v-highlightjs><code class="json">{{jsonstr}}</code></pre>
+        <!-- TODO: finish this part -->
+        <codemirror v-model:code="jsonstr" :options="cmOptions" />
       </a-form-item>
     </a-form>
   </div>
@@ -59,10 +54,13 @@ import {
 } from "/@/services/mapping";
 import { message } from "ant-design-vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
+import codemirror from "../../components/codemirror.vue";
+// import "codemirror/lib/codemirror.css";
 
 export default {
   components: {
     PlusOutlined,
+    codemirror,
   },
 
   props: {
@@ -114,17 +112,6 @@ export default {
       }
     };
 
-    const watchTabPress = (e) => {
-      console.log(e);
-      e.preventDefault();
-      const el = e.srcElement;
-      // FIXME(@yeqown): tab replacing wrong.
-      jsonstr.value =
-        jsonstr.value.substring(0, el.selectionStart) +
-        "\t" +
-        jsonstr.value.substring(el.selectionEnd - 1);
-    };
-
     const jsonstr = ref("");
 
     // watch state.form.value
@@ -158,11 +145,18 @@ export default {
       translateDataType,
       hdlCreateOrUpdate,
       hdlDatatypeSwitch,
-      watchTabPress,
+      // watchTabPress,
 
       labelCol: { span: 4 },
       wrapperCol: { span: 12 },
       jsonstr,
+      cmOptions: {
+        tabSize: 4,
+        mode: "text/javascript",
+        theme: "base16-dark",
+        lineNumbers: true,
+        line: true,
+      },
     };
   },
 };
