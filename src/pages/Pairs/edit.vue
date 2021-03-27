@@ -36,7 +36,8 @@
 
       <!-- value container node, should be changed while datatype changed -->
       <a-form-item label="Value" v-show="state.form.datatype != 0">
-        <codemirror v-model:code="jsonstr" />
+        <!-- <codemirror :code="jsonstr" @change="hdlCodemirrorChange" /> -->
+        <codeeditor v-model="jsonstr" />
       </a-form-item>
     </a-form>
   </div>
@@ -53,13 +54,14 @@ import {
 } from "/@/services/mapping";
 import { message } from "ant-design-vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
-import codemirror from "../../components/codemirror.vue";
-// import "codemirror/lib/codemirror.css";
+// import codemirror from "../../components/codemirror.vue";
+import codeeditor from "../../components/codeeditor.vue";
 
 export default {
   components: {
     PlusOutlined,
-    codemirror,
+    // codemirror,
+    codeeditor,
   },
 
   props: {
@@ -112,16 +114,19 @@ export default {
     };
 
     const jsonstr = ref("");
-
     // watch state.form.value
     watch(
       () => {
         return state.form.value;
       },
-      (value, preValue) => {
-        // console.log("watch value==================", value);
-        jsonstr.value = JSON.stringify(value, null, "\t");
-        // jsonstr.value = JSON.stringify(value);
+
+      (newValue, preValue) => {
+        // console.log(
+        //   "watching value ==================, state.form changed",
+        //   newValue
+        // );
+        jsonstr.value = JSON.stringify(newValue, null, "\t");
+        console.log("jsonstr chahged: ", jsonstr.value);
       }
     );
 
@@ -140,17 +145,22 @@ export default {
       state.form.value = { value: value };
     });
 
+    const hdlCodemirrorChange = () => {
+      console.log("hdlCodemirrorChange called");
+    };
+
     return {
       state,
+      jsonstr,
 
       translateDataType,
       hdlCreateOrUpdate,
       hdlDatatypeSwitch,
       // watchTabPress,
+      hdlCodemirrorChange,
 
       labelCol: { span: 4 },
       wrapperCol: { span: 12 },
-      jsonstr,
     };
   },
 };

@@ -1,11 +1,12 @@
 <template>
   <div>
-    <textarea id="editorTextarea" v-model="code" />
+    <!-- <textarea ref="editorRef" v-model="state.content"></textarea> -->
+    <textarea v-model="state.content"></textarea>
   </div>
 </template>
 
 <script>
-import { reactive, onMounted, watch, ref, nextTick, defineEmit } from "vue";
+import { reactive, onMounted, ref, watch } from "vue";
 import codemirror from "codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/lib/codemirror.css";
@@ -16,19 +17,15 @@ export default {
   name: "CodeMirror",
 
   props: {
-    code: "",
+    code: String,
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const state = reactive({
-      editor: null,
-      doc: "",
+      content: "",
     });
 
-    // const emit = defineEmit("")
-
     const options = {
-      // tabSize: 4,
       autofocus: true,
       mode: "text/javascript",
       theme: "idea",
@@ -38,39 +35,51 @@ export default {
       cursorHeight: 0.85,
     };
 
-    // watch(
-    //   () => {
-    //     return props.code;
-    //   },
-    //   (value, preValue) => {
-    //     console.log("changed ==== ", value, preValue);
-    //   }
-    // );
-
-    // const editor = ref("");
+    const editorRef = ref();
+    const editor = ref();
     const createEditor = () => {
-      state.editor = new codemirror.fromTextArea(
-        document.getElementById("editorTextarea"),
-        options
-      );
-      // state.editor.setValue(props.code);
-      state.editor.on("change", (e) => {
-        // console.log("editor changing", e.getValue());
-        state.doc = e.getValue();
+      editor.value = new codemirror.fromTextArea(editorRef.value, options);
+      editor.value.on("change", (e) => {
+        if (props.code === e.getValue()) {
+          console.log("same text content, so ignored");
+          return;
+        }
+        // state.doc = e.getValue();
+        // console.log("changed calling");
+        emit("change");
       });
+
+      console.log(editor.value);
+
+      editor.value.getTextArea().focus();
+      // editorRef.value.focus();
     };
 
+    watch(
+      () => {
+        return props.code;
+      },
+      (newValue, preValue) => {
+        console.log(
+          "codemirror detected props changed.... new: " +
+            newValue +
+            "old: " +
+            preValue
+        );
+
+        state.content = newValue;
+        // editor.value.setValue(newValue);
+        // editor.value.setCursor({ line: 0, ch: 0 });
+        // editor.value.getTextArea().value = newValue;
+      }
+    );
+
     onMounted(() => {
-      console.log("mounted called, props=======", props.code);
-      createEditor();
+      console.log("mounted called, props=======", props, props.code);
+      // createEditor();
     });
 
-    // nextTick(() => {
-    //   console.log("tick called");
-    //   state.editor.refresh();
-    // });
-
-    return { state };
+    return { state, editorRef };
   },
 };
 </script>
