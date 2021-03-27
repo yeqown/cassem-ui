@@ -211,6 +211,11 @@
   "resolved" "https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz"
   "version" "3.7.2"
 
+"codemirror@^5.60.0":
+  "integrity" "sha512-AEL7LhFOlxPlCL8IdTcJDblJm8yrAGib7I+DErJPdZd4l6imx8IMgKK3RblVgBQqz3TZJR4oknQ03bz+uNjBYA=="
+  "resolved" "https://registry.npmjs.org/codemirror/-/codemirror-5.60.0.tgz"
+  "version" "5.60.0"
+
 "colorette@^1.2.2":
   "integrity" "sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w=="
   "resolved" "https://registry.npmjs.org/colorette/-/colorette-1.2.2.tgz"
@@ -327,11 +332,6 @@
   "integrity" "sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg=="
   "resolved" "https://registry.npmjs.org/hash-sum/-/hash-sum-2.0.0.tgz"
   "version" "2.0.0"
-
-"highlight.js@^10.3.2":
-  "integrity" "sha512-S6G97tHGqJ/U8DsXcEdnACbirtbx58Bx9CzIVeYli8OuswCfYI/LsXH2EiGcoGio1KAC3x4mmUwulOllJ2ZyRA=="
-  "resolved" "https://registry.npmjs.org/highlight.js/-/highlight.js-10.7.1.tgz"
-  "version" "10.7.1"
 
 "iconv-lite@^0.4.4":
   "integrity" "sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA=="
@@ -725,13 +725,6 @@
     "@vue/compiler-dom" "3.0.7"
     "@vue/runtime-dom" "3.0.7"
     "@vue/shared" "3.0.7"
-
-"vue3-highlightjs@^1.0.5":
-  "integrity" "sha512-Q4YNPXu0X5VMBnwPVOk+IQf1Ohp9jFdMitEAmzaz8qVVefcQpN6Dx4BnDGKxja3TLDVF+EgL136wC8YzmoCX9w=="
-  "resolved" "https://registry.npmjs.org/vue3-highlightjs/-/vue3-highlightjs-1.0.5.tgz"
-  "version" "1.0.5"
-  dependencies:
-    "highlight.js" "^10.3.2"
 
 "warning@^4.0.0":
   "integrity" "sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w=="

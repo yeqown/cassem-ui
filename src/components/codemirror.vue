@@ -1,58 +1,76 @@
 <template>
-  <div class="codemirror" ref="editor" style="height: 200px"></div>
+  <div>
+    <textarea id="editorTextarea" v-model="code" />
+  </div>
 </template>
 
 <script>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, onMounted, watch, ref, nextTick, defineEmit } from "vue";
 import codemirror from "codemirror";
+import "codemirror/mode/javascript/javascript";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/idea.css";
+// import "codemirror/theme/duotone-light.css";
 
 export default {
-  name: "App",
+  name: "CodeMirror",
 
   props: {
     code: "",
   },
 
   setup(props) {
-    console.log("props==============", props.code);
-    const state = reactive({});
+    const state = reactive({
+      editor: null,
+      doc: "",
+    });
 
-    const codemirrorConfig = {
-      tabSize: 4,
-      styleActiveLine: true,
+    // const emit = defineEmit("")
+
+    const options = {
+      // tabSize: 4,
+      autofocus: true,
+      mode: "text/javascript",
+      theme: "idea",
       lineNumbers: true,
-      lineWrapping: false,
       line: true,
-      mode: "text/x-src",
-      theme: "default",
-      cursorHeight: 1,
-      lineWiseCopyCut: true,
+      styleActiveLine: true,
+      cursorHeight: 0.85,
     };
 
-    const codemirrorview = ref(null);
-    const editorScrollHeight = ref(0);
-    const editor = ref(null);
+    // watch(
+    //   () => {
+    //     return props.code;
+    //   },
+    //   (value, preValue) => {
+    //     console.log("changed ==== ", value, preValue);
+    //   }
+    // );
+
+    // const editor = ref("");
     const createEditor = () => {
-      editor.value = new codemirror(codemirrorview.value, {
-        value: "",
-        onload: (data) => {
-          log("data is data");
-          //   const {
-          //     doc: { height = 0 },
-          //   } = data;
-          //   editorScrollHeight.value = height;
-        },
-        ...codemirrorConfig,
+      state.editor = new codemirror.fromTextArea(
+        document.getElementById("editorTextarea"),
+        options
+      );
+      // state.editor.setValue(props.code);
+      state.editor.on("change", (e) => {
+        // console.log("editor changing", e.getValue());
+        state.doc = e.getValue();
       });
     };
 
     onMounted(() => {
-      //console.log(marked)
-      console.log("called on mount");
+      console.log("mounted called, props=======", props.code);
       createEditor();
     });
 
-    return { state, codemirrorview, editor, codemirrorConfig };
+    // nextTick(() => {
+    //   console.log("tick called");
+    //   state.editor.refresh();
+    // });
+
+    return { state };
   },
 };
 </script>

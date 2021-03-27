@@ -36,8 +36,7 @@
 
       <!-- value container node, should be changed while datatype changed -->
       <a-form-item label="Value" v-show="state.form.datatype != 0">
-        <!-- TODO: finish this part -->
-        <codemirror v-model:code="jsonstr" :options="cmOptions" />
+        <codemirror v-model:code="jsonstr" />
       </a-form-item>
     </a-form>
   </div>
@@ -120,7 +119,9 @@ export default {
         return state.form.value;
       },
       (value, preValue) => {
+        // console.log("watch value==================", value);
         jsonstr.value = JSON.stringify(value, null, "\t");
+        // jsonstr.value = JSON.stringify(value);
       }
     );
 
@@ -150,13 +151,6 @@ export default {
       labelCol: { span: 4 },
       wrapperCol: { span: 12 },
       jsonstr,
-      cmOptions: {
-        tabSize: 4,
-        mode: "text/javascript",
-        theme: "base16-dark",
-        lineNumbers: true,
-        line: true,
-      },
     };
   },
 };
