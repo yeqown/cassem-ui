@@ -23,8 +23,6 @@ export default defineComponent({
         maxLines: 1000,
         autoScrollEditorIntoView: true,
         fontSize: 16,
-        lineHeight: 30,
-        keyBinding: "vscode",
       },
     },
     onChange: {
