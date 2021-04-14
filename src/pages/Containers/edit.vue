@@ -91,7 +91,7 @@
             <a-list-item>
               <a-space>
                 <a-input
-                  :value="item.key"
+                  v-model:value="item.key"
                   :disabled="state.newFieldForm.fieldType != 3"
                   placeholder="alias for pair"
                 />
