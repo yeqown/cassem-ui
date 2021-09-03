@@ -26,7 +26,7 @@
         style="padding: 0 8px"
       >
         <!-- <span>{{ app }}</span> -->
-        <a-card>
+        <a-card :hoverable="true" @click="handleJumpToAppDetail(app.id)">
           <img
             slot="cover"
             src="https://gw.alipayobjects.com/zos/rmsportal/iZBVOIhGJiAnhplqjvZW.png"
@@ -105,6 +105,15 @@ export default {
       return humandate.relativeTime(seconds, {
         pastSuffix: "前",
         futureSuffix: "后",
+      });
+    },
+    handleJumpToAppDetail(appId) {
+      if (!appId) {
+        console.error("could not jump to detail, since appId is: ", appId);
+        return;
+      }
+      this.$router.push({
+        path: `/application/detail/${appId}`,
       });
     },
   },

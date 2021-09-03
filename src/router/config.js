@@ -31,7 +31,7 @@ const options = {
           name: '工作台',
           meta: {
             icon: 'dashboard',
-            closable: false
+            closable: false,
           },
           component: () => import('@/pages/dashboard/workplace'),
         },
@@ -60,8 +60,58 @@ const options = {
               },
               component: () => import('@/pages/app/List'),
             },
+            {
+              path: 'success',
+              name: '创建成功',
+              meta: {
+                invisible: true,
+              },
+              component: () => import('@/pages/app/result/Success'),
+            },
+            {
+              path: 'error',
+              name: '创建失败',
+              meta: {
+                invisible: true,
+              },
+              component: () => import('@/pages/app/result/Error'),
+            },
+            // {
+            //   path: 'detail/:appId',
+            //   name: '应用详情',
+            //   meta: {
+            //     invisible: true,
+            //     page: {}
+            //   },
+            //   component: () => import('@/pages/app/detail/Detail'),
+            // },
+            {
+              path: 'detail/:appId/new-element',
+              name: '新增配置',
+              meta: {
+                invisible: true,
+              },
+              component: () => import('@/pages/app/detail/newelem'),
+            },
           ]
         },
+        {
+          path: 'application/detail/:appId',
+          name: '应用详情',
+          meta: {
+            invisible: true,
+            page: {}
+          },
+          component: () => import('@/pages/app/detail/Detail'),
+        },
+        // {
+        //   path: 'application/detail/:appId/new-element',
+        //   name: '新增配置',
+        //   meta: {
+        //     invisible: true,
+        //   },
+        //   component: () => import('@/pages/app/detail/newelem'),
+        // },
         {
           path: 'cluster',
           name: '集群',

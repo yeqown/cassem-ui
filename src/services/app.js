@@ -21,6 +21,27 @@ export async function createApp({ name, appId, desc }) {
   })
 }
 
+export async function getApp({ appId }) {
+  return request(`${APPS}/${appId}`, METHOD.GET)
+}
+
+export async function getAppEnvs({ appId }) {
+  return request(`${APPS}/${appId}/envs`, METHOD.GET)
+}
+
+export async function createAppEnv({ appId, env }) {
+  return request(`${APPS}/${appId}/envs/${env}`, METHOD.POST)
+}
+
+export async function getAppElements({ appId, env, seek, limit }) {
+  return request(`${APPS}/${appId}/envs/${env}/elements`, METHOD.GET, { seek, limit })
+}
+
+export async function deleteAppEnv({ appId, env }) {
+  return request(`${APPS}/${appId}/envs/${env}`, METHOD.DELETE)
+}
+
+
 export default {
   getApps,
   createApp,

@@ -20,57 +20,64 @@ const routerMap = {
   },
   dashboard: {
     name: '工作台',
+    path: '/dashboard',
     component: () => import('@/pages/dashboard/workplace')
   },
   application: {
     name: '应用',
+    path: '/application',
     component: () => import('@/pages/app/List')
+  },
+  applicationDetail: {
+    name: '应用详情',
+    path: 'detail',
+    component: () => import('@/pages/app/detail/Detail')
   },
   form: {
     name: '表单页',
     icon: 'form',
     component: view.page
   },
-  basicForm: {
+  createApp: {
     path: 'new',
-    name: '基础表单',
-    component: () => import('@/pages/form/basic')
+    name: '新建应用',
+    component: () => import('@/pages/app/new')
   },
-  stepForm: {
-    path: 'step',
-    name: '分步表单',
-    component: () => import('@/pages/form/step')
-  },
-  advanceForm: {
-    path: 'advance',
-    name: '高级表单',
-    component: () => import('@/pages/form/advance')
-  },
-  list: {
-    name: '列表页',
-    icon: 'table',
-    component: view.page
-  },
-  queryList: {
-    path: 'query',
-    name: '查询表格',
-    component: () => import('@/pages/list/QueryList')
-  },
-  primaryList: {
-    path: 'primary',
-    name: '标准列表',
-    component: () => import('@/pages/list/StandardList')
-  },
-  cardList: {
-    path: 'card',
-    name: '卡片列表',
-    component: () => import('@/pages/list/CardList')
-  },
-  result: {
-    name: '结果页',
-    icon: 'check-circle-o',
-    component: view.page
-  },
+  // stepForm: {
+  //   path: 'step',
+  //   name: '分步表单',
+  //   component: () => import('@/pages/form/step')
+  // },
+  // advanceForm: {
+  //   path: 'advance',
+  //   name: '高级表单',
+  //   component: () => import('@/pages/form/advance')
+  // },
+  // list: {
+  //   name: '列表页',
+  //   icon: 'table',
+  //   component: view.page
+  // },
+  // queryList: {
+  //   path: 'query',
+  //   name: '查询表格',
+  //   component: () => import('@/pages/list/QueryList')
+  // },
+  // primaryList: {
+  //   path: 'primary',
+  //   name: '标准列表',
+  //   component: () => import('@/pages/list/StandardList')
+  // },
+  // cardList: {
+  //   path: 'card',
+  //   name: '卡片列表',
+  //   component: () => import('@/pages/list/CardList')
+  // },
+  // result: {
+  //   name: '结果页',
+  //   icon: 'check-circle-o',
+  //   component: view.page
+  // },
   success: {
     name: '成功',
     component: () => import('@/pages/result/Success')
