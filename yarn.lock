@@ -2913,6 +2913,11 @@
     "chalk" "^2.4.1"
     "q" "^1.1.2"
 
+"codemirror@^5.22.0":
+  "integrity" "sha1-XP3uaTHIstGzmudzqqrsLMa1VY4="
+  "resolved" "https://registry.nlark.com/codemirror/download/codemirror-5.62.3.tgz?cache=0&sync_timestamp=1629450596099&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcodemirror%2Fdownload%2Fcodemirror-5.62.3.tgz"
+  "version" "5.62.3"
+
 "collection-visit@^1.0.0":
   "integrity" "sha1-S8A3PBZLwykbTTaMgpzxqApZ3KA="
   "resolved" "https://registry.npm.taobao.org/collection-visit/download/collection-visit-1.0.0.tgz"
@@ -10192,6 +10197,13 @@
   "integrity" "sha1-YIeoYTLqgSWqieX44Kl4+8jPb1k= sha512-aK2TyVThZO6oVPZJpCckha8ALcg1RXKYLNqtuy1fNv+24x6zGWKpSK+FHAo47B7yeRlFS9DbKo+cvUFMqWaZ7Q=="
   "resolved" "https://registry.npm.taobao.org/vue-cli-plugin-style-resources-loader/download/vue-cli-plugin-style-resources-loader-0.1.4.tgz"
   "version" "0.1.4"
+
+"vue-codemirror-lite@^1.0.4":
+  "integrity" "sha1-SKXNfRfAkUUDyM2dm1a0OOScNBA="
+  "resolved" "https://registry.nlark.com/vue-codemirror-lite/download/vue-codemirror-lite-1.0.4.tgz"
+  "version" "1.0.4"
+  dependencies:
+    "codemirror" "^5.22.0"
 
 "vue-eslint-parser@^7.0.0":
   "integrity" "sha1-nNvMgj5lawh1B6GRFzK4Z6wQHoM= sha512-Kr21uPfthDc63nDl27AGQEhtt9VrZ9nkYk/NTftJ2ws9XiJwzJJCnCr3AITQ2jpRMA0XPGDECxYH8E027qMK9Q=="

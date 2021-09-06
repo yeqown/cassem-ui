@@ -6,8 +6,12 @@
       />
     </a-row>
     <a-row style="margin-bottom: 24px">
-      <!-- TODO: 使用文本编辑器 -->
-      <a-textarea> </a-textarea>
+      <codemirror
+        v-model="code"
+        :options="options"
+        ref="myEditor"
+        @change="handleEditorChange"
+      />
     </a-row>
     <a-row>
       <a-col :span="24">
@@ -23,13 +27,37 @@
 </template>
 
 <script>
+import { codemirror } from "vue-codemirror-lite";
+import "codemirror/mode/javascript/javascript";
+import "codemirror/theme/dracula.css";
+import "codemirror/lib/codemirror.css";
+import "codemirror/lib/codemirror.js";
 export default {
   name: "Step2",
   i18n: require("./i18n"),
+  components: { codemirror },
   data() {
     return {
       loading: false,
+      code: "function foo() { console.log('this is a')}",
+      options: {
+        // https://codemirror.net/doc/manual.html#config more options theme: mode:
+        theme: "dracula",
+        smartIndent: true,
+        tabSize: 2,
+        mode: "text/javascript",
+        lineNumbers: true,
+        readOnly: false,
+      },
     };
+  },
+  computed: {
+    editor() {
+      return this.$refs.myEditor.editor;
+    },
+  },
+  mounted() {
+    this.editor.focus();
   },
   methods: {
     nextStep() {
@@ -42,6 +70,7 @@ export default {
     prevStep() {
       this.$emit("prevStep");
     },
+    handleEditorChange() {},
   },
 };
 </script>

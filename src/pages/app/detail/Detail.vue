@@ -86,14 +86,40 @@
           <detail-list-item term="配置项格式">{{
             CONTENT_TYPE_MAPPING[elem.metadata.contentType]
           }}</detail-list-item>
-          <a-button>修改</a-button>
-          <a-button>发布</a-button>
-          <a-button>回滚</a-button>
-          <a-button>删除</a-button>
         </detail-list>
-        <!-- <a-divider style="margin-bottom: 32px" /> -->
+        <span>编辑/删除/发布/回滚</span>
+        <template slot="actions" class="ant-card-actions">
+          <a-tooltip>
+            <template slot="title"> 编辑 </template>
+            <a-icon key="edit" type="edit" />
+          </a-tooltip>
+          <a-tooltip>
+            <template slot="title"> 发布 </template>
+            <a-icon key="pull-request" type="pull-request" /> </a-tooltip
+          ><a-tooltip>
+            <template slot="title"> 回滚 </template>
+            <a-icon key="rollback" type="rollback" /> </a-tooltip
+          ><a-tooltip>
+            <template slot="title"> 删除 </template>
+            <a-icon key="delete" type="delete" color="red" />
+          </a-tooltip>
+        </template>
       </a-card>
-      <a-card title="新增"></a-card>
+      <a-button
+        size="large"
+        type="dashed"
+        style="width: 100%; height: 4em"
+        @click="
+          () => {
+            this.$router.push({
+              path: `/application/detail/${appId}/new-element`,
+              query: { env: curEnv },
+            });
+          }
+        "
+      >
+        <a-icon type="plus" size="4em" />
+      </a-button>
     </div>
     <div v-else class="exception-page">
       <img
