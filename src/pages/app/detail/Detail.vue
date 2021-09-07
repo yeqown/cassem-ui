@@ -50,84 +50,100 @@
       <span>{{ app }}</span>
     </div>
 
-    <div v-if="elements && elements.length">
-      <a-card
-        :bordered="true"
+    <a-list
+      v-if="elements && elements.length"
+      :grid="{ gutter: 24, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }"
+      style="margin: 0 -8px"
+    >
+      <a-list-item
         v-for="(elem, index) in elements"
         :key="index"
-        :title="elem.metadata.key || '获取中'"
-        style="margin-bottom: 20px"
-        size="small"
+        style="padding: 0 8px"
       >
-        <div slot="extra">
-          <a-tag v-if="elem.published" color="green" type="primary"
-            >已发布</a-tag
-          >
-          <a>历史版本</a>
-        </div>
-        <detail-list>
-          <detail-list-item term="使用中版本">
-            <a v-if="elem.metadata.usingVersion !== 0">{{
-              elem.metadata.usingVersion
-            }}</a>
-            <span v-else>-</span></detail-list-item
-          >
-          <detail-list-item term="最新版本"
-            ><a v-if="elem.metadata.latestVersion !== 0">{{
-              elem.metadata.latestVersion
-            }}</a>
-            <span v-else>-</span></detail-list-item
-          >
-          <detail-list-item term="待发布版本"
-            ><a v-if="elem.metadata.unpublishedVersion !== 0">{{
-              elem.metadata.unpublishedVersion
-            }}</a>
-            <span v-else>-</span>
-          </detail-list-item>
-          <detail-list-item term="配置项格式">{{
-            CONTENT_TYPE_MAPPING[elem.metadata.contentType]
-          }}</detail-list-item>
-        </detail-list>
-        <template slot="actions" class="ant-card-actions">
-          <a-tooltip>
-            <template slot="title"> 编辑 </template>
-            <a-icon key="edit" type="edit" />
-          </a-tooltip>
-          <a-tooltip>
-            <template slot="title"> 发布 </template>
-            <a-icon key="pull-request" type="pull-request" /> </a-tooltip
-          ><a-tooltip>
-            <template slot="title"> 回滚 </template>
-            <a-icon key="rollback" type="rollback" /> </a-tooltip
-          ><a-tooltip>
-            <template slot="title"> 删除 </template>
-            <a-popconfirm
-              title="确认要删除这个配置项吗"
-              ok-text="确认"
-              cancel-text="取消"
-              @confirm="handleDeleteAppEnvElement(elem.metadata.key)"
+        <a-card
+          :hoverable="true"
+          :title="elem.metadata.key || '获取中'"
+          style="margin-bottom: 20px"
+          size="small"
+        >
+          <div slot="extra">
+            <a-tag v-if="elem.published" color="green" type="primary"
+              >已发布</a-tag
             >
-              <a-icon key="delete" type="delete" color="red" />
-            </a-popconfirm>
-          </a-tooltip>
-        </template>
-      </a-card>
-      <a-button
-        size="large"
-        type="dashed"
-        style="width: 100%; height: 4em"
-        @click="
-          () => {
-            this.$router.push({
-              path: `/application/detail/${appId}/new-element`,
-              query: { env: curEnv },
-            });
-          }
-        "
-      >
-        <a-icon type="plus" size="4em" />
-      </a-button>
-    </div>
+            <a>历史版本</a>
+          </div>
+          <detail-list>
+            <detail-list-item term="使用中版本">
+              <a v-if="elem.metadata.usingVersion !== 0">{{
+                elem.metadata.usingVersion
+              }}</a>
+              <span v-else>-</span></detail-list-item
+            >
+            <detail-list-item term="最新版本"
+              ><a v-if="elem.metadata.latestVersion !== 0">{{
+                elem.metadata.latestVersion
+              }}</a>
+              <span v-else>-</span></detail-list-item
+            >
+            <detail-list-item term="待发布版本"
+              ><a v-if="elem.metadata.unpublishedVersion !== 0">{{
+                elem.metadata.unpublishedVersion
+              }}</a>
+              <span v-else>-</span>
+            </detail-list-item>
+            <detail-list-item term="配置项格式">{{
+              CONTENT_TYPE_MAPPING[elem.metadata.contentType]
+            }}</detail-list-item>
+          </detail-list>
+          <template slot="actions" class="ant-card-actions">
+            <a-tooltip>
+              <template slot="title"> 编辑 </template>
+              <a-icon key="edit" type="edit" />
+            </a-tooltip>
+            <a-tooltip>
+              <template slot="title"> 发布 </template>
+              <a-icon key="pull-request" type="pull-request" /> </a-tooltip
+            ><a-tooltip>
+              <template slot="title"> 回滚 </template>
+              <a-icon key="rollback" type="rollback" /> </a-tooltip
+            ><a-tooltip>
+              <template slot="title"> 删除 </template>
+              <a-popconfirm
+                title="确认要删除这个配置项吗"
+                ok-text="确认"
+                cancel-text="取消"
+                @confirm="handleDeleteAppEnvElement(elem.metadata.key)"
+              >
+                <a-icon key="delete" type="delete" color="red" />
+              </a-popconfirm>
+            </a-tooltip>
+          </template>
+        </a-card>
+      </a-list-item>
+
+      <a-list-item style="padding: 0 8px">
+        <a-card :hoverable="true">
+          <a-button
+            size="large"
+            type="dashed"
+            style="height: 170px; width: 100%"
+            @click="
+              () => {
+                this.$router.push({
+                  path: `/application/detail/${appId}/new-element`,
+                  query: { env: curEnv },
+                });
+              }
+            "
+          >
+            <a-icon
+              type="plus"
+              :style="{ fontSize: '2em', color: '#52c41a' }"
+            />
+          </a-button>
+        </a-card>
+      </a-list-item>
+    </a-list>
     <div v-else class="exception-page">
       <img
         class="img"
