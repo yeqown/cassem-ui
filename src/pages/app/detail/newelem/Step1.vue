@@ -1,13 +1,24 @@
 <template>
   <div>
-    <a-form style="max-width: 500px; margin: 40px auto 0">
+    <a-form style="max-width: 500px; margin: 40px auto 0" ref="refFormNewElem">
       <a-form-item
         label="配置名"
         :labelCol="{ span: 7 }"
         :wrapperCol="{ span: 17 }"
         required
       >
-        <a-input :value="key" />
+        <a-input
+          v-model="k"
+          placeholder="输入配置项的名称"
+          @change="
+            (e) => {
+              // console.log(e, e.target.value);
+              const newValue = e.target.value;
+              //elemKey = e.target.value;
+              this.$emit('update:elemKey', newValue);
+            }
+          "
+        />
       </a-form-item>
       <a-form-item
         label="内容格式"
@@ -15,7 +26,15 @@
         :wrapperCol="{ span: 17 }"
         required
       >
-        <a-select :value="contentType" placeholder="ant-design@alipay.com">
+        <a-select
+          v-model="ct"
+          placeholder="选择一种格式"
+          @select="
+            (val) => {
+              this.$emit('update:contentType', val);
+            }
+          "
+        >
           <a-select-option :value="1">JSON</a-select-option>
           <a-select-option :value="2">TOML</a-select-option>
           <a-select-option :value="3">INI</a-select-option>
@@ -35,14 +54,24 @@
 export default {
   name: "Step1",
   i18n: require("./i18n"),
+  props: {
+    elemKey: String,
+    contentType: Number,
+  },
   data() {
     return {
-      key: "",
-      contentType: 1,
+      k: "",
+      ct: 1,
     };
   },
   methods: {
     nextStep() {
+      // console.log(this.k, this.ct, this.elemKey, this.contentType);
+      if (!this.elemKey || this.elemKey === "") {
+        this.$message.error("请输入配置项的名称");
+        return;
+      }
+
       this.$emit("nextStep");
     },
   },

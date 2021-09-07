@@ -36,10 +36,13 @@ export default {
   name: "Step2",
   i18n: require("./i18n"),
   components: { codemirror },
+  props: {
+    elemContent: String,
+  },
   data() {
     return {
       loading: false,
-      code: "function foo() { console.log('this is a')}",
+      code: "",
       options: {
         // https://codemirror.net/doc/manual.html#config more options theme: mode:
         theme: "dracula",
@@ -64,13 +67,17 @@ export default {
       let _this = this;
       _this.loading = true;
       setTimeout(function () {
-        _this.$emit("nextStep");
-      }, 1500);
+        _this.$emit("nextStep", { final: true });
+        _this.loading = false;
+      }, 500);
     },
     prevStep() {
       this.$emit("prevStep");
     },
-    handleEditorChange() {},
+    handleEditorChange() {
+      // console.log("editor value: ", this.editor.getValue());
+      this.$emit("update:elemContent", this.editor.getValue());
+    },
   },
 };
 </script>

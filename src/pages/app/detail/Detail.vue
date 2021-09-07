@@ -8,7 +8,8 @@
           :closable="true"
           @close="() => handleEnvDelete(env)"
           @click="handleEnvChange({ env })"
-          color="green"
+          :color="env === curEnv ? 'green' : ''"
+          :dashed="env === curEnv ? false : true"
           type="primary"
         >
           {{ env }}
@@ -16,20 +17,19 @@
       </template>
 
       <a-input
-        v-if="envInputVisible"
+        v-show="envInputVisible"
         ref="refInput"
         type="text"
         size="small"
         :style="{ width: '78px', 'margin-right': '10px' }"
-        :value="envInput"
-        @blur="handleInputConfirm"
+        v-model="envInput"
         @keyup.enter="handleInputConfirm"
       />
       <a-tag
-        v-else
+        v-if="!envInputVisible"
         style="background: #fff; borderstyle: dashed"
         size="middle"
-        @click="handleNewEnvClick"
+        @click.prevent="handleFocusEnvInput"
       >
         <a-icon type="plus" /> 新增
       </a-tag>
@@ -52,17 +52,18 @@
 
     <div v-if="elements && elements.length">
       <a-card
-        :bordered="false"
+        :bordered="true"
         v-for="(elem, index) in elements"
         :key="index"
         :title="elem.metadata.key || '获取中'"
         style="margin-bottom: 20px"
+        size="small"
       >
         <div slot="extra">
           <a-tag v-if="elem.published" color="green" type="primary"
             >已发布</a-tag
           >
-          <a>所有版本</a>
+          <a>历史版本</a>
         </div>
         <detail-list>
           <detail-list-item term="使用中版本">
@@ -87,7 +88,6 @@
             CONTENT_TYPE_MAPPING[elem.metadata.contentType]
           }}</detail-list-item>
         </detail-list>
-        <span>编辑/删除/发布/回滚</span>
         <template slot="actions" class="ant-card-actions">
           <a-tooltip>
             <template slot="title"> 编辑 </template>
@@ -101,7 +101,14 @@
             <a-icon key="rollback" type="rollback" /> </a-tooltip
           ><a-tooltip>
             <template slot="title"> 删除 </template>
-            <a-icon key="delete" type="delete" color="red" />
+            <a-popconfirm
+              title="确认要删除这个配置项吗"
+              ok-text="确认"
+              cancel-text="取消"
+              @confirm="handleDeleteAppEnvElement(elem.metadata.key)"
+            >
+              <a-icon key="delete" type="delete" color="red" />
+            </a-popconfirm>
           </a-tooltip>
         </template>
       </a-card>
@@ -139,26 +146,6 @@
         >去新增吧</a
       >
     </div>
-
-    <!-- <template>
-      <a-drawer
-        title="新增配置"
-        placement="right"
-        :width="720"
-        :closable="false"
-        :visible="elemDrawerVisible"
-        @close="onClose"
-      >
-        <a-form>
-          <a-form-item label="配置名称">
-            <a-input></a-input>
-          </a-form-item>
-          <a-form-item label="配置描述">
-            <a-input></a-input>
-          </a-form-item>
-        </a-form>
-      </a-drawer>
-    </template> -->
   </page-layout>
 </template>
 
@@ -176,6 +163,7 @@ import {
   getAppElements,
   getAppEnvs,
   deleteAppEnv,
+  deleteAppEnvElement,
 } from "../../../services/app";
 
 export default {
@@ -187,7 +175,7 @@ export default {
       app: null,
 
       envs: [],
-      curEnv: "default",
+      curEnv: "",
       envInputVisible: false,
       envInput: "",
 
@@ -207,23 +195,39 @@ export default {
     },
   },
   methods: {
-    handleNewEnvClick() {
+    handleFocusEnvInput() {
       this.envInputVisible = true;
-      const input = this.$refs.refInput;
-      console.log(this.$refs, input);
-      input.focus();
+      // console.log(
+      //   "============ handleFocusEnvInput called",
+      //   this.$refs,
+      //   this.$refs.refInput
+      // );
+      this.$refs.refInput.focus();
     },
     handleInputConfirm() {
-      console.log("============ handleInputConfirm called", this.envInput);
+      // console.log("============ handleInputConfirm called", this.envInput);
       this.envInputVisible = false;
       if (!this.envInput) {
         return;
       }
-      createAppEnv({ appId: this.appId, env: this.envInput }).then(() => {});
+      createAppEnv({ appId: this.appId, env: this.envInput }).then(() => {
+        this.envInput = "";
+        setTimeout(() => {
+          getAppEnvs({ appId: this.appId }).then((res) => {
+            let { envs } = res.data.data;
+            this.envs = envs;
+          });
+        }, 1000);
+      });
     },
     handleEnvChange({ env }) {
+      if (env === this.curEnv) {
+        // no need refresh env elements
+        return;
+      }
+
       this.curEnv = env;
-      getAppElements({ appId: this.appId, env: env }).then((res) => {
+      getAppElements({ appId: this.appId, env: this.curEnv }).then((res) => {
         const { elements, hasMore, nextSeek } = res.data.data;
         this.elements = elements;
         this.pagination = { hasMore, nextSeek, limit: limit };
@@ -250,14 +254,21 @@ export default {
       }
     },
     handleEnvDelete(env) {
-      //
       deleteAppEnv({ appId: this.appId, env }).then(() => {
-        //
+        // 如果删除的是当前环境，则切换到默认环境
+        if (env === this.curEnv) {
+          this.handleEnvChange({ env: "default" });
+        }
       });
     },
-    onClose() {
-      this.envDrawerVisible = false;
-      this.elemDrawerVisible = false;
+    handleDeleteAppEnvElement(elemKey) {
+      deleteAppEnvElement({
+        appId: this.appId,
+        env: this.curEnv,
+        key: elemKey,
+      }).then(() => {
+        this.handleRefreshElements();
+      });
     },
   },
   created() {
@@ -266,12 +277,20 @@ export default {
       return;
     }
     this.appId = appId;
+
+    // app detail
     getApp({ appId }).then((res) => {
       this.app = res.data.data;
     });
 
+    // envs and env elements
     getAppEnvs({ appId }).then((res) => {
       this.envs = res.data.data.envs;
+      if (this.envs.length <= 0) {
+        return;
+      }
+
+      this.handleEnvChange({ env: this.envs[0] });
     });
   },
 };

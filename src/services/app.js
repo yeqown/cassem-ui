@@ -33,6 +33,16 @@ export async function createAppEnv({ appId, env }) {
   return request(`${APPS}/${appId}/envs/${env}`, METHOD.POST)
 }
 
+export async function createAppEnvElement({ appId, env, key, contentType, value }) {
+  return request(`${APPS}/${appId}/envs/${env}/elements/${key}`, METHOD.POST, {
+    contentType, raw: value,
+  })
+}
+
+export async function deleteAppEnvElement({ appId, env, key, }) {
+  return request(`${APPS}/${appId}/envs/${env}/elements/${key}`, METHOD.DELETE)
+}
+
 export async function getAppElements({ appId, env, seek, limit }) {
   return request(`${APPS}/${appId}/envs/${env}/elements`, METHOD.GET, { seek, limit })
 }
@@ -45,4 +55,9 @@ export async function deleteAppEnv({ appId, env }) {
 export default {
   getApps,
   createApp,
+  getApp,
+  getAppEnvs,
+  createAppEnv,
+  getAppElements,
+  deleteAppEnv,
 }

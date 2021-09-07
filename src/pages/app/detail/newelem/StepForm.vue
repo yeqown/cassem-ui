@@ -1,21 +1,29 @@
 <template>
   <div>
     <a-card :bordered="false">
-      <a-steps class="steps" :current="current">
+      <a-steps class="steps" :currentStep="currentStep">
         <a-step title="基本信息" />
         <a-step title="配置内容" />
         <a-step title="完成" />
       </a-steps>
       <div class="content">
-        <step1 v-if="current === 0" @nextStep="nextStep"></step1>
+        <step1
+          v-if="currentStep === 0"
+          @nextStep="nextStep"
+          :elemKey.sync="element.key"
+          :contentType.sync="element.contentType"
+        ></step1>
         <step2
-          v-if="current === 1"
+          v-if="currentStep === 1"
           @nextStep="nextStep"
           @prevStep="prevStep"
+          :elemContent.sync="element.value"
         ></step2>
         <step3
-          v-if="current === 2"
+          v-if="currentStep === 2"
           @prevStep="prevStep"
+          :appId="appId"
+          :env="env"
           @finish="finish"
         ></step3>
       </div>
@@ -24,6 +32,7 @@
 </template>
 
 <script>
+import { createAppEnvElement } from "../../../../services/app";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
@@ -34,9 +43,14 @@ export default {
   components: { Step1, Step2, Step3 },
   data() {
     return {
-      current: 0,
+      currentStep: 0,
       appId: "",
       env: "",
+      element: {
+        key: "",
+        contentType: 1,
+        value: "",
+      },
     };
   },
   computed: {
@@ -45,18 +59,34 @@ export default {
     },
   },
   methods: {
-    nextStep() {
-      if (this.current < 2) {
-        this.current += 1;
+    nextStep(opt) {
+      if (this.currentStep < 2) {
+        this.currentStep += 1;
+      }
+
+      console.log("============ nextStep, ", opt);
+      if (!opt) return;
+      let { final = false } = opt;
+      if (final) {
+        createAppEnvElement({
+          appId: this.appId,
+          env: this.env,
+          key: this.element.key,
+          contentType: this.element.contentType,
+          value: this.element.value,
+        }).then(() => {
+          this.$message.success("创建成功");
+          // this.$router.push(`/app/${this.appId}/detail/${this.env}`);
+        });
       }
     },
     prevStep() {
-      if (this.current > 0) {
-        this.current -= 1;
+      if (this.currentStep > 0) {
+        this.currentStep -= 1;
       }
     },
     finish() {
-      this.current = 0;
+      this.currentStep = 0;
     },
   },
   created() {
