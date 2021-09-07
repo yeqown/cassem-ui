@@ -44,10 +44,10 @@ async function request(url, method, params, config) {
  * @param authType {AUTH_TYPE} 认证类型，默认：{AUTH_TYPE.BEARER}
  */
 function setAuthorization(auth) {
-  const { account, salt } = auth
+  const { user, session } = auth
 
-  localStorage.setItem("x-cassem-user", account)
-  localStorage.setItem("x-cassem-hash", salt)
+  localStorage.setItem("x-cassem-user", user)
+  localStorage.setItem("x-cassem-session", session)
 }
 
 /**
@@ -56,18 +56,16 @@ function setAuthorization(auth) {
  */
 function removeAuthorization() {
   localStorage.removeItem("x-cassem-user")
-  localStorage.removeItem("x-cassem-hash")
+  localStorage.removeItem("x-cassem-session")
 }
 
 function checkAuthorization() {
-  return localStorage.getItem("x-cassem-user") !== "" &&
-    localStorage.getItem("x-cassem-hash") != ""
+  return localStorage.getItem("x-cassem-session") !== ""
 }
 
 function loadAuthorization() {
   return {
-    account: localStorage.getItem("x-cassem-user"),
-    salt: localStorage.getItem("x-cassem-hash"),
+    session: localStorage.getItem("x-cassem-session"),
   }
 }
 

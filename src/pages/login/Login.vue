@@ -154,18 +154,19 @@ export default {
       this.logging = false;
       const loginRes = res.data;
       if (loginRes.errcode >= 0) {
-        const {
-          account,
-          nickname,
-          salt,
-          avatar = "https://gw.alipayobjects.com/zos/rmsportal/WhxKECPNujWoWEFNdnJE.png",
-        } = loginRes.data;
-        this.setUser({ account, name: nickname, salt, avatar });
+        const { user, session } = loginRes.data;
+        this.setUser({
+          account: user.account || "INVALID",
+          name: user.nickname || "INVALID",
+          avatar:
+            user.avatar ||
+            "https://gw.alipayobjects.com/zos/rmsportal/WhxKECPNujWoWEFNdnJE.png",
+        });
         // this.setPermissions([{ id: "cluster", operation: ["add", "edit"] }]);
         // this.setRoles([{ id: "admin", operation: ["add", "edit", "delete"] }]);
         setAuthorization({
-          account,
-          salt,
+          session,
+          user,
         });
 
         // 获取路由配置

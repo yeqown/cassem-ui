@@ -1,4 +1,4 @@
-import { checkAuthorization, loadAuthorization } from './request'
+import { checkAuthorization, loadAuthorization, removeAuthorization } from './request'
 // 401拦截
 const resp401 = {
   /**
@@ -76,15 +76,16 @@ const reqCommon = {
    * @returns {*}
    */
   onFulfilled(config, options) {
-    const { message } = options
+    const { message, router } = options
     if (!checkAuthorization()) {
       message.error('请先登录')
+      removeAuthorization()
+      router.push('/login')
       return
     }
 
-    const { account, salt } = loadAuthorization()
-    config.headers['x-cassem-user'] = account
-    config.headers['x-cassem-hash'] = salt
+    const { session } = loadAuthorization()
+    config.headers['x-cassem-session'] = session
 
     return config
   },
