@@ -1,19 +1,16 @@
 <template>
   <div>
     <a-card :bordered="false" class="search-form">
-      <a-form :form="form">
-        <form-row label="应用名" style="padding-bottom: 11px">
-          <a-form-item mode="inline">
-            <a-input></a-input>
-            <a-button
-              type="primary"
-              style="margin-left: 8px"
-              @click="searchApps"
-              >搜索</a-button
-            >
-          </a-form-item>
-        </form-row>
-      </a-form>
+      <a-row>
+        <a-col :span="8">
+          <a-input v-model="search" placeholder="输入应用前缀"></a-input>
+        </a-col>
+        <a-col :span="8">
+          <a-button type="primary" style="margin-left: 8px" @click="searchApps"
+            >搜索</a-button
+          >
+        </a-col>
+      </a-row>
     </a-card>
 
     <a-list
@@ -39,44 +36,50 @@
           </a-card-meta>
           <div class="content">
             <span> {{ app.description }} </span>
-            <!-- <avatar-list>
-              <avatar-list-item
-                size="small"
-                tips="曲丽丽"
-                src="https://gw.alipayobjects.com/zos/rmsportal/ZiESqWwCXBRQoaPONSJe.png"
-              />
-              <avatar-list-item
-                size="small"
-                tips="周星星"
-                src="https://gw.alipayobjects.com/zos/rmsportal/tBOxZPlITHqwlGjsJWaF.png"
-              />
-              <avatar-list-item
-                size="small"
-                tips="董娜娜"
-                src="https://gw.alipayobjects.com/zos/rmsportal/sBxjgqiuHMGRkIjqlQCd.png"
-              />
-            </avatar-list> -->
           </div>
+
+          <template slot="actions" class="ant-card-actions">
+            <a-tooltip>
+              <template slot="title"> 编辑 </template>
+              <a-icon key="edit" type="edit" />
+            </a-tooltip>
+            <a-tooltip>
+              <template slot="title"> 删除 </template>
+              <a-popconfirm
+                title="确认要删除这个应用吗"
+                ok-text="确认"
+                cancel-text="取消"
+                @confirm="handleDeleteApp(elem.metadata.key)"
+              >
+                <a-icon key="delete" type="delete" color="red" />
+              </a-popconfirm>
+            </a-tooltip>
+          </template>
         </a-card>
       </a-list-item>
     </a-list>
+
+    <div v-show="hasMore">
+      <a @click="turePageApps">加载更多</a>
+    </div>
   </div>
 </template>
 
 <script>
 // import AvatarList from "../../components/tool/AvatarList";
-import FormRow from "../../components/form/FormRow";
-import { getApps } from "../../services/app";
+// import FormRow from "../../components/form/FormRow";
+import { getApps, deleteApp } from "../../services/app";
 import { humandate } from "../../utils/humandate";
 // const AvatarListItem = AvatarList.Item;
 
+const LIMIT = 2;
+
 export default {
   name: "List",
-  components: { FormRow },
+  components: {},
   data() {
     return {
       apps: null,
-      form: null,
       search: "",
       nextSeek: "",
       hasMore: false,
@@ -88,16 +91,31 @@ export default {
     },
   },
   created() {
-    this.searchApps();
+    this.searchApps({});
   },
   methods: {
     searchApps() {
-      const seek = this.seek || this.nextSeek || "";
-      getApps(seek, 10).then((res) => {
+      this.listApps({});
+    },
+    turePageApps() {
+      this.listApps({ append: true });
+    },
+
+    listApps({ append = false }) {
+      console.log("listApps", this.search, this.nextSeek, LIMIT);
+
+      const seek = this.search || this.nextSeek || "";
+      getApps(seek, LIMIT).then((res) => {
         const { apps, hasMore, nextSeek } = res.data.data;
-        this.apps = apps;
+        if (append) {
+          this.apps = this.apps.concat(apps);
+        } else {
+          this.apps = apps;
+        }
+
         this.hasMore = hasMore;
         this.nextSeek = nextSeek;
+        this.search = "";
       });
     },
     relativeTime(seconds) {
@@ -114,6 +132,11 @@ export default {
       }
       this.$router.push({
         path: `/application/detail/${appId}`,
+      });
+    },
+    handleDeleteApp(app) {
+      deleteApp(app).then(() => {
+        this.listApps();
       });
     },
   },

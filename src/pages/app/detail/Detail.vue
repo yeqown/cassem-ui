@@ -47,7 +47,23 @@
     </div>
 
     <div slot="headerContent" v-if="app">
-      <span>{{ app }}</span>
+      <detail-list :col="4">
+        <detail-list-item term="应用ID">
+          {{ app.id }}
+        </detail-list-item>
+        <detail-list-item term="应用创建者">
+          {{ app.creator }}
+        </detail-list-item>
+        <detail-list-item term="应用所属者">
+          {{ app.owner }}
+        </detail-list-item>
+        <detail-list-item term="应用创建时间">
+          {{ new Date(app.createdAt * 1000).toLocaleString() }}
+        </detail-list-item>
+        <detail-list-item term="应用描述">
+          {{ app.description }}
+        </detail-list-item>
+      </detail-list>
     </div>
 
     <a-list
@@ -72,7 +88,7 @@
             >
             <a>历史版本</a>
           </div>
-          <detail-list>
+          <detail-list :col="2">
             <detail-list-item term="使用中版本">
               <a v-if="elem.metadata.usingVersion !== 0">{{
                 elem.metadata.usingVersion
@@ -98,14 +114,36 @@
           <template slot="actions" class="ant-card-actions">
             <a-tooltip>
               <template slot="title"> 编辑 </template>
-              <a-icon key="edit" type="edit" />
+              <a-icon
+                key="edit"
+                type="edit"
+                :style="{ color: '#40a9ff' }"
+                @click="
+                  () => {
+                    this.$message.info('编辑功能暂未开放，敬请期待');
+                  }
+                "
+              />
             </a-tooltip>
             <a-tooltip>
               <template slot="title"> 发布 </template>
-              <a-icon key="pull-request" type="pull-request" /> </a-tooltip
+              <a-icon
+                key="pull-request"
+                type="pull-request"
+                :style="{ color: '#52c41a' }"
+                @click="handlePublishAppVersion(elem)"
+              /> </a-tooltip
             ><a-tooltip>
               <template slot="title"> 回滚 </template>
-              <a-icon key="rollback" type="rollback" /> </a-tooltip
+              <a-icon
+                key="rollback"
+                type="rollback"
+                @click="
+                  () => {
+                    this.$message.info('编辑功能暂未开放，敬请期待');
+                  }
+                "
+              /> </a-tooltip
             ><a-tooltip>
               <template slot="title"> 删除 </template>
               <a-popconfirm
@@ -114,19 +152,24 @@
                 cancel-text="取消"
                 @confirm="handleDeleteAppEnvElement(elem.metadata.key)"
               >
-                <a-icon key="delete" type="delete" color="red" />
+                <a-icon
+                  key="delete"
+                  type="delete"
+                  theme="twoTone"
+                  two-tone-color="#eb2f96"
+                />
               </a-popconfirm>
             </a-tooltip>
           </template>
         </a-card>
       </a-list-item>
 
-      <a-list-item style="padding: 0 8px">
+      <a-list-item>
         <a-card :hoverable="true">
           <a-button
             size="large"
             type="dashed"
-            style="height: 170px; width: 100%"
+            style="height: 136px; width: 100%"
             @click="
               () => {
                 this.$router.push({
@@ -171,7 +214,7 @@ import PageLayout from "../../../layouts/PageLayout";
 import { CONTENT_TYPE_MAPPING } from "../config";
 
 const DetailListItem = DetailList.Item;
-const limit = 10;
+const LIMIT = 100;
 
 import {
   createAppEnv,
@@ -180,6 +223,8 @@ import {
   getAppEnvs,
   deleteAppEnv,
   deleteAppEnvElement,
+  publishAppEnvElement,
+  PUBLISH_MODE_GRAY,
 } from "../../../services/app";
 
 export default {
@@ -196,7 +241,7 @@ export default {
       envInput: "",
 
       elements: [],
-      pagination: { hasMore: true, limit: limit, nextSeek: "" },
+      pagination: { hasMore: true, LIMIT: LIMIT, nextSeek: "" },
       // elemDrawerVisible: false,
 
       CONTENT_TYPE_MAPPING: CONTENT_TYPE_MAPPING,
@@ -246,14 +291,14 @@ export default {
       getAppElements({ appId: this.appId, env: this.curEnv }).then((res) => {
         const { elements, hasMore, nextSeek } = res.data.data;
         this.elements = elements;
-        this.pagination = { hasMore, nextSeek, limit: limit };
+        this.pagination = { hasMore, nextSeek, LIMIT: LIMIT };
       });
     },
     handleRefreshElements() {
       getAppElements({ appId: this.appId, env: this.curEnv }).then((res) => {
         const { elements, hasMore, nextSeek } = res.data.data;
         this.elements = elements;
-        this.pagination = { hasMore, nextSeek, limit: limit };
+        this.pagination = { hasMore, nextSeek, LIMIT: LIMIT };
       });
     },
     handleMenuClick({ key }) {
@@ -275,6 +320,25 @@ export default {
         if (env === this.curEnv) {
           this.handleEnvChange({ env: "default" });
         }
+      });
+    },
+    handlePublishAppVersion(elem) {
+      if (!elem) return;
+
+      if (!elem.metadata.unpublishedVersion) {
+        this.$message.info("没有可供发布的版本");
+        return;
+      }
+
+      publishAppEnvElement({
+        appId: this.appId,
+        env: this.curEnv,
+        key: elem.metadata.key,
+        version: elem.metadata.unpublishedVersion,
+        mode: PUBLISH_MODE_GRAY,
+      }).then(() => {
+        this.$message.success("发布成功");
+        this.handleRefreshElements();
       });
     },
     handleDeleteAppEnvElement(elemKey) {

@@ -21,6 +21,10 @@ export async function createApp({ name, appId, desc }) {
   })
 }
 
+export async function deleteApp(appId) {
+  return request(`${APPS}/${appId}`, METHOD.DELETE)
+}
+
 export async function getApp({ appId }) {
   return request(`${APPS}/${appId}`, METHOD.GET)
 }
@@ -52,6 +56,16 @@ export async function deleteAppEnv({ appId, env }) {
 }
 
 
+export const PUBLISH_MODE_ALL = 1
+export const PUBLISH_MODE_GRAY = 2
+
+export async function publishAppEnvElement({ appId, env, key, version, mode = PUBLISH_MODE_GRAY }) {
+  return request(`${APPS}/${appId}/envs/${env}/elements/${key}/publish`, METHOD.POST, {
+    version: version,
+    publishMode: mode,
+  })
+}
+
 export default {
   getApps,
   createApp,
@@ -60,4 +74,7 @@ export default {
   createAppEnv,
   getAppElements,
   deleteAppEnv,
+
+  PUBLISH_MODE_ALL,
+  PUBLISH_MODE_GRAY
 }
