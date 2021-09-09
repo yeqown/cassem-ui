@@ -41,7 +41,7 @@
           <template slot="actions" class="ant-card-actions">
             <a-tooltip>
               <template slot="title"> 编辑 </template>
-              <a-icon key="edit" type="edit" />
+              <a-icon key="edit" type="edit" :style="{ color: '#40a9ff' }" />
             </a-tooltip>
             <a-tooltip>
               <template slot="title"> 删除 </template>
@@ -51,7 +51,11 @@
                 cancel-text="取消"
                 @confirm="handleDeleteApp(elem.metadata.key)"
               >
-                <a-icon key="delete" type="delete" color="red" />
+                <a-icon
+                  key="delete"
+                  type="delete"
+                  :style="{ color: '#eb2f96' }"
+                />
               </a-popconfirm>
             </a-tooltip>
           </template>

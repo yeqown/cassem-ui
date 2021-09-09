@@ -75,6 +75,10 @@ export default {
       this.$emit("nextStep");
     },
   },
+  created() {
+    this.k = this.elemKey;
+    this.ct = this.contentType;
+  },
 };
 </script>
 

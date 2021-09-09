@@ -7,16 +7,19 @@
     </a-row>
     <a-row style="margin-bottom: 24px">
       <codemirror
-        v-model="code"
+        :value="elemContent"
         :options="options"
         ref="myEditor"
         @change="handleEditorChange"
       />
+      <!-- <span>elemContent: {{ elemContent }}</span>
+      <br />
+      <span>code: {{ code }}</span> -->
     </a-row>
     <a-row>
       <a-col :span="24">
         <a-button :loading="loading" type="primary" @click="nextStep">{{
-          $t("submit")
+          elemContent.length > 0 ? "更新" : "提交"
         }}</a-button>
         <a-button style="margin-left: 8px" @click="prevStep">{{
           $t("preStep")
@@ -59,8 +62,13 @@ export default {
       return this.$refs.myEditor.editor;
     },
   },
+  created() {
+    // console.log("Step2 created", this.elemContent, this.code);
+  },
   mounted() {
     this.editor.focus();
+    // this.code = this.elemContent;
+    // console.log("Step2 mounted", this.elemContent, this.code);
   },
   methods: {
     nextStep() {

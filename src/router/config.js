@@ -86,10 +86,20 @@ const options = {
             //   component: () => import('@/pages/app/detail/Detail'),
             // },
             {
-              path: 'detail/:appId/new-element',
+              path: 'detail/:appId/new',
               name: '新增配置',
               meta: {
                 invisible: true,
+                cacheAble: false,
+              },
+              component: () => import('@/pages/app/detail/newelem'),
+            },
+            {
+              path: 'detail/:appId/edit',
+              name: '编辑配置',
+              meta: {
+                invisible: true,
+                cacheAble: false,
               },
               component: () => import('@/pages/app/detail/newelem'),
             },

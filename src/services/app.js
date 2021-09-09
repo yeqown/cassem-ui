@@ -43,6 +43,17 @@ export async function createAppEnvElement({ appId, env, key, contentType, value 
   })
 }
 
+export async function updateAppEnvElement({ appId, env, key, value }) {
+  return request(`${APPS}/${appId}/envs/${env}/elements/${key}`, METHOD.PUT, {
+    raw: value,
+  })
+}
+
+export async function getAppEnvElement({ appId, env, key }) {
+  return request(`${APPS}/${appId}/envs/${env}/elements/${key}`, METHOD.GET)
+}
+
+
 export async function deleteAppEnvElement({ appId, env, key, }) {
   return request(`${APPS}/${appId}/envs/${env}/elements/${key}`, METHOD.DELETE)
 }

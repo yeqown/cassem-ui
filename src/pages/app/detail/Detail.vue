@@ -23,6 +23,11 @@
         size="small"
         :style="{ width: '78px', 'margin-right': '10px' }"
         v-model="envInput"
+        @blur="
+          () => {
+            this.envInputVisible = false;
+          }
+        "
         @keyup.enter="handleInputConfirm"
       />
       <a-tag
@@ -39,8 +44,8 @@
           <a-icon type="ordered-list" />
         </a>
         <a-menu slot="overlay" @click="handleMenuClick">
-          <a-menu-item key="newEle">
-            <a-icon type="plus" />新增配置
+          <a-menu-item key="newEle" disabled>
+            <a-icon type="edit" />新增配置
           </a-menu-item>
         </a-menu>
       </a-dropdown>
@@ -67,7 +72,7 @@
     </div>
 
     <a-list
-      v-if="elements && elements.length"
+      v-show="elements && elements.length"
       :grid="{ gutter: 24, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }"
       style="margin: 0 -8px"
     >
@@ -118,11 +123,7 @@
                 key="edit"
                 type="edit"
                 :style="{ color: '#40a9ff' }"
-                @click="
-                  () => {
-                    this.$message.info('编辑功能暂未开放，敬请期待');
-                  }
-                "
+                @click="handleClickEdit(elem)"
               />
             </a-tooltip>
             <a-tooltip>
@@ -173,7 +174,7 @@
             @click="
               () => {
                 this.$router.push({
-                  path: `/application/detail/${appId}/new-element`,
+                  path: `/application/detail/${appId}/new`,
                   query: { env: curEnv },
                 });
               }
@@ -187,7 +188,7 @@
         </a-card>
       </a-list-item>
     </a-list>
-    <div v-else class="exception-page">
+    <div v-if="!(elements && elements.length)" class="exception-page">
       <img
         class="img"
         src="https://gw.alipayobjects.com/zos/rmsportal/KpnpchXsobRgLElEozzI.svg"
@@ -348,6 +349,12 @@ export default {
         key: elemKey,
       }).then(() => {
         this.handleRefreshElements();
+      });
+    },
+    handleClickEdit(elem) {
+      this.$router.push({
+        path: `/application/detail/${this.app.id}/edit`,
+        query: { env: this.curEnv, key: elem.metadata.key, step: 1 },
       });
     },
   },
