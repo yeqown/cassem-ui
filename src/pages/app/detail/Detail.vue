@@ -128,17 +128,31 @@
             </a-tooltip>
             <a-tooltip>
               <template slot="title"> 发布 </template>
-              <a-icon
-                key="pull-request"
-                type="pull-request"
-                :style="{ color: '#52c41a' }"
-                @click="handlePublishAppVersion(elem)"
-              /> </a-tooltip
+              <a-dropdown>
+                <a-icon
+                  key="pull-request"
+                  type="pull-request"
+                  :style="{ color: '#52c41a' }"
+                />
+                <a-menu slot="overlay">
+                  <a-menu-item
+                    @click="handlePublishAppVersion(elem, PUBLISH_MODE_ALL)"
+                  >
+                    <a-icon type="robot" /> 全量发布</a-menu-item
+                  >
+                  <a-menu-item
+                    @click="handlePublishAppVersion(elem, PUBLISH_MODE_GRAY)"
+                  >
+                    <a-icon type="monitor" /> 灰度发布</a-menu-item
+                  >
+                </a-menu>
+              </a-dropdown> </a-tooltip
             ><a-tooltip>
               <template slot="title"> 回滚 </template>
               <a-icon
                 key="rollback"
                 type="rollback"
+                :style="{ color: '#40a9ff' }"
                 @click="
                   () => {
                     this.$message.info('编辑功能暂未开放，敬请期待');
@@ -226,6 +240,7 @@ import {
   deleteAppEnvElement,
   publishAppEnvElement,
   PUBLISH_MODE_GRAY,
+  PUBLISH_MODE_ALL,
 } from "../../../services/app";
 
 export default {
@@ -246,6 +261,8 @@ export default {
       // elemDrawerVisible: false,
 
       CONTENT_TYPE_MAPPING: CONTENT_TYPE_MAPPING,
+      PUBLISH_MODE_GRAY: PUBLISH_MODE_GRAY,
+      PUBLISH_MODE_ALL: PUBLISH_MODE_ALL,
     };
   },
   computed: {
@@ -323,7 +340,7 @@ export default {
         }
       });
     },
-    handlePublishAppVersion(elem) {
+    handlePublishAppVersion(elem, mode) {
       if (!elem) return;
 
       if (!elem.metadata.unpublishedVersion) {
@@ -336,7 +353,7 @@ export default {
         env: this.curEnv,
         key: elem.metadata.key,
         version: elem.metadata.unpublishedVersion,
-        mode: PUBLISH_MODE_GRAY,
+        mode: mode,
       }).then(() => {
         this.$message.success("发布成功");
         setTimeout(() => this.handleRefreshElements(), 500);

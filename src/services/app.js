@@ -67,8 +67,8 @@ export async function deleteAppEnv({ appId, env }) {
 }
 
 
-export const PUBLISH_MODE_ALL = 1
-export const PUBLISH_MODE_GRAY = 2
+export const PUBLISH_MODE_GRAY = 1
+export const PUBLISH_MODE_ALL = 2
 
 export async function publishAppEnvElement({ appId, env, key, version, mode = PUBLISH_MODE_GRAY }) {
   return request(`${APPS}/${appId}/envs/${env}/elements/${key}/publish`, METHOD.POST, {

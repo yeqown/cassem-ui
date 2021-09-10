@@ -76,7 +76,7 @@ import { getApps, deleteApp } from "../../services/app";
 import { humandate } from "../../utils/humandate";
 // const AvatarListItem = AvatarList.Item;
 
-const LIMIT = 2;
+const LIMIT = 8;
 
 export default {
   name: "List",

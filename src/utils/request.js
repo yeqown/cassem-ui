@@ -44,9 +44,8 @@ async function request(url, method, params, config) {
  * @param authType {AUTH_TYPE} 认证类型，默认：{AUTH_TYPE.BEARER}
  */
 function setAuthorization(auth) {
-  const { user, session } = auth
+  const { session } = auth
 
-  localStorage.setItem("x-cassem-user", user)
   localStorage.setItem("x-cassem-session", session)
 }
 
@@ -55,7 +54,6 @@ function setAuthorization(auth) {
  * @param authType {AUTH_TYPE} 认证类型
  */
 function removeAuthorization() {
-  localStorage.removeItem("x-cassem-user")
   localStorage.removeItem("x-cassem-session")
 }
 
