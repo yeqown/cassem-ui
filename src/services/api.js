@@ -5,4 +5,5 @@ const BASE_URL = process.env.VUE_APP_API_BASE_URL
 module.exports = {
   LOGIN: `${BASE_URL}/api/account/login`,
   APPS: `${BASE_URL}/api/apps`,
+  CLUSTER: `${BASE_URL}/api/cluster`,
 }

@@ -128,12 +128,12 @@ const options = {
             {
               path: 'agents',
               name: '客户端代理服务',
-              component: () => import('@/pages/list/QueryList'),
+              component: () => import('@/pages/cluster/AgentList'),
             },
             {
               path: 'instances',
               name: '客户端实例',
-              component: () => import('@/pages/list/StandardList'),
+              component: () => import('@/pages/cluster/ClientInstanceList'),
             }
           ]
         }
