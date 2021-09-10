@@ -31,7 +31,9 @@ const options = {
           name: '工作台',
           meta: {
             icon: 'dashboard',
-            closable: false,
+            page: {
+              closable: false,
+            },
           },
           component: () => import('@/pages/dashboard/workplace'),
         },
