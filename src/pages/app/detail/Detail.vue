@@ -198,7 +198,7 @@
         @click="
           () => {
             this.$router.push({
-              path: `/application/detail/${appId}/new-element`,
+              path: `/application/detail/${appId}/new`,
               query: { env: curEnv },
             });
           }
@@ -307,7 +307,7 @@ export default {
         case "newEle":
           // this.elemDrawerVisible = true;
           this.$router.push({
-            path: `/application/detail/${this.appId}/new-element`,
+            path: `/application/detail/${this.appId}/new`,
             query: { env: this.curEnv },
           });
           break;

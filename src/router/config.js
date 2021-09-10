@@ -114,14 +114,6 @@ const options = {
           },
           component: () => import('@/pages/app/detail/Detail'),
         },
-        // {
-        //   path: 'application/detail/:appId/new-element',
-        //   name: '新增配置',
-        //   meta: {
-        //     invisible: true,
-        //   },
-        //   component: () => import('@/pages/app/detail/newelem'),
-        // },
         {
           path: 'cluster',
           name: '集群',
