@@ -12,12 +12,14 @@
           @nextStep="nextStep"
           :elemKey.sync="element.key"
           :contentType.sync="element.contentType"
+          :disabled="step1Disabled"
         ></step1>
         <step2
           v-if="currentStep === 1"
           @nextStep="nextStep"
           @prevStep="prevStep"
           :elemContent.sync="element.value"
+          :contentType="element.contentType"
         ></step2>
         <step3
           v-if="currentStep === 2"
@@ -56,7 +58,7 @@ export default {
         contentType: 1,
         value: "",
       },
-      elementKey: "",
+      step1Disabled: false,
     };
   },
 
@@ -139,11 +141,12 @@ export default {
     }
 
     if (this.element.key && this.element.key.length > 0) {
+      this.step1Disabled = true;
       getAppEnvElement({ appId, env, key }).then((res) => {
         // console.log(res.data.data);
         let { metadata, raw } = res.data.data;
 
-        this.element.value = raw;
+        this.element.value = atob(raw);
         this.element.key = metadata.key;
         this.element.contentType = metadata.contentType;
         // this.$set(this.element, "key", metadata.key);

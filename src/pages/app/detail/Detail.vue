@@ -339,7 +339,7 @@ export default {
         mode: PUBLISH_MODE_GRAY,
       }).then(() => {
         this.$message.success("发布成功");
-        this.handleRefreshElements();
+        setTimeout(() => this.handleRefreshElements(), 500);
       });
     },
     handleDeleteAppEnvElement(elemKey) {

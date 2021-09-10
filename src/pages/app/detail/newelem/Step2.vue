@@ -31,16 +31,22 @@
 
 <script>
 import { codemirror } from "vue-codemirror-lite";
-import "codemirror/mode/javascript/javascript";
+import "codemirror/mode/javascript/javascript"; // json
+import "codemirror/mode/toml/toml"; // toml
+import "codemirror/mode/yaml/yaml"; // yaml
+// import "codemirror/mode/null/null"; // plaintext
+import "codemirror/mode/properties/properties"; // ini
 import "codemirror/theme/dracula.css";
 import "codemirror/lib/codemirror.css";
 import "codemirror/lib/codemirror.js";
+import { CONTENT_TYPE_VALUES } from "../../config";
 export default {
   name: "Step2",
   i18n: require("./i18n"),
   components: { codemirror },
   props: {
     elemContent: String,
+    contentType: Number,
   },
   data() {
     return {
@@ -64,6 +70,21 @@ export default {
   },
   created() {
     // console.log("Step2 created", this.elemContent, this.code);
+    console.log(CONTENT_TYPE_VALUES);
+    switch (this.contentType) {
+      case CONTENT_TYPE_VALUES["JSON"]:
+        this.options.mode = "javascript";
+        break;
+      case CONTENT_TYPE_VALUES["YAML"]:
+        this.options.mode = "yaml";
+        break;
+      case CONTENT_TYPE_VALUES["PLAINTEXT"]:
+        this.options.mode = "null";
+        break;
+      case CONTENT_TYPE_VALUES["INI"]:
+        this.options.mode = "properties";
+        break;
+    }
   },
   mounted() {
     this.editor.focus();

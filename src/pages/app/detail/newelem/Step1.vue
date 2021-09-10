@@ -18,6 +18,7 @@
               this.$emit('update:elemKey', newValue);
             }
           "
+          :disabled="disabled"
         />
       </a-form-item>
       <a-form-item
@@ -34,6 +35,7 @@
               this.$emit('update:contentType', val);
             }
           "
+          :disabled="disabled"
         >
           <a-select-option :value="1">JSON</a-select-option>
           <a-select-option :value="2">TOML</a-select-option>
@@ -57,6 +59,7 @@ export default {
   props: {
     elemKey: String,
     contentType: Number,
+    disabled: Boolean,
   },
   data() {
     return {
