@@ -117,6 +117,15 @@ const options = {
           component: () => import('@/pages/app/detail/Detail'),
         },
         {
+          path: 'application/detail/:appId/versions',
+          name: '历史版本',
+          meta: {
+            invisible: true,
+            page: {}
+          },
+          component: () => import('@/pages/app/detail/Versions'),
+        },
+        {
           path: 'cluster',
           name: '集群',
           meta: {

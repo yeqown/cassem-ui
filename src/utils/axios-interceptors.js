@@ -1,4 +1,4 @@
-import { checkAuthorization, loadAuthorization, removeAuthorization } from './request'
+import { checkAuthorization, loadAuthorization, removeAuthorization, SESSION_KEY } from './request'
 // 401拦截
 const resp401 = {
   /**
@@ -85,7 +85,7 @@ const reqCommon = {
     }
 
     const { session } = loadAuthorization()
-    config.headers['x-cassem-session'] = session
+    config.headers[SESSION_KEY] = session
 
     return config
   },

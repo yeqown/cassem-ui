@@ -42,6 +42,7 @@ import {
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
+import { decode } from "js-base64";
 
 export default {
   name: "ElementByStep",
@@ -146,7 +147,7 @@ export default {
         // console.log(res.data.data);
         let { metadata, raw } = res.data.data;
 
-        this.element.value = atob(raw);
+        this.element.value = decode(raw);
         this.element.key = metadata.key;
         this.element.contentType = metadata.contentType;
         // this.$set(this.element, "key", metadata.key);

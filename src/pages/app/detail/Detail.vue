@@ -91,7 +91,7 @@
             <a-tag v-if="elem.published" color="green" type="primary"
               >已发布</a-tag
             >
-            <a>历史版本</a>
+            <a @click="handleClickHistoryVersion(elem)">历史版本</a>
           </div>
           <detail-list :col="2">
             <detail-list-item term="使用中版本">
@@ -372,6 +372,15 @@ export default {
       this.$router.push({
         path: `/application/detail/${this.app.id}/edit`,
         query: { env: this.curEnv, key: elem.metadata.key, step: 1 },
+      });
+    },
+    handleClickHistoryVersion(elem) {
+      this.$router.push({
+        path: `/application/detail/${this.app.id}/versions`,
+        query: {
+          env: this.curEnv,
+          key: elem.metadata.key,
+        },
       });
     },
   },

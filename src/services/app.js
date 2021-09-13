@@ -53,6 +53,9 @@ export async function getAppEnvElement({ appId, env, key }) {
   return request(`${APPS}/${appId}/envs/${env}/elements/${key}`, METHOD.GET)
 }
 
+export async function getAppEnvElementVersions({ appId, env, key }) {
+  return request(`${APPS}/${appId}/envs/${env}/elements/${key}/versions`, METHOD.GET)
+}
 
 export async function deleteAppEnvElement({ appId, env, key, }) {
   return request(`${APPS}/${appId}/envs/${env}/elements/${key}`, METHOD.DELETE)
@@ -74,6 +77,12 @@ export async function publishAppEnvElement({ appId, env, key, version, mode = PU
   return request(`${APPS}/${appId}/envs/${env}/elements/${key}/publish`, METHOD.POST, {
     version: version,
     publishMode: mode,
+  })
+}
+
+export async function rollbackAppEnvElement({ appId, env, key, version }) {
+  return request(`${APPS}/${appId}/envs/${env}/elements/${key}/rollback`, METHOD.POST, {
+    version: version,
   })
 }
 

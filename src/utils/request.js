@@ -38,6 +38,8 @@ async function request(url, method, params, config) {
   }
 }
 
+const SESSION_KEY = 'x-cassem-session'
+
 /**
  * 设置认证信息
  * @param auth {Object}
@@ -46,7 +48,7 @@ async function request(url, method, params, config) {
 function setAuthorization(auth) {
   const { session } = auth
 
-  localStorage.setItem("x-cassem-session", session)
+  localStorage.setItem(SESSION_KEY, session)
 }
 
 /**
@@ -54,16 +56,18 @@ function setAuthorization(auth) {
  * @param authType {AUTH_TYPE} 认证类型
  */
 function removeAuthorization() {
-  localStorage.removeItem("x-cassem-session")
+  localStorage.removeItem(SESSION_KEY)
 }
 
 function checkAuthorization() {
-  return localStorage.getItem("x-cassem-session") !== ""
+  return localStorage.getItem(SESSION_KEY) !== ""
+  // console.log("checkAuthorization", b);
+  // return b;
 }
 
 function loadAuthorization() {
   return {
-    session: localStorage.getItem("x-cassem-session"),
+    session: localStorage.getItem(SESSION_KEY),
   }
 }
 
@@ -128,6 +132,7 @@ function parseUrlParams(url) {
 
 export {
   METHOD,
+  SESSION_KEY,
   request,
   setAuthorization,
   removeAuthorization,

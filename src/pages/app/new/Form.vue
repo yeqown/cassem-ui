@@ -54,9 +54,9 @@ export default {
   data() {
     return {
       form: {
-        title: "aaa",
-        appId: "aaa",
-        desc: "aaa",
+        title: "",
+        appId: "",
+        desc: "",
       },
       rules: {
         title: [{ required: true, message: this.$t("titleInput") }],
